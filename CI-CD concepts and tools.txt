@@ -1,0 +1,58 @@
+
+ Tools
+========
+1. GitHub Actions
+2. Jenkins or GitLab
+2. Argo CD
+
+1. Set up GitHub Actions
+------------------------------
+
+1.1 Open your repository : Go to your project folder on your computer.(https://github.com/urgew/urge-ansible1/projects)
+
+1.2 Create the workflow folders: Create a folder named .github and a subfolder named workflows
+
+
+Step 1 on my laptop
+----------------
+1. install git  Download it from the official Git website.---> https://git-scm.com/install/windows
+
+2. Run the installer and click Next through the default settings.
+
+start with : file:///C:/Users/urgew/AppData/Local/Programs/Git/ReleaseNotes.html
+
+3. create one folder and named it by .github 
+   then create another folder inside /github and save as workflows 
+   then inside folder workflows create a file called ci.yml
+
+
+Step 2: Create a Repository on the GitHub Website
+-----------------------------------------------------
+-Go to github.com and log in.
+-Click the green New button on the left to create a new repository.
+-Give it a name (urge-git-project).
+-Leave everything else as-is (do not check "Add a README file").
+-Click Create repository.
+
+  After creation of new repository : https://github.com/urgew/urge-git-project.git
+
+Step 3: Link Your Laptop Folder to GitHub
+------------------------------------------
+1. go the folder where .github is created which is D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project
+
+(Do not go inside .github or workflows. Stay in the main folder outside of them.)
+
+2. on empty space right click --open Git bash here -->then Git bash is opened look like : urgew@INF-CLP-05 MINGW64 /d/Urge_PC/Documents/My_Doc/Docker-and-Kubernet-Learning/CI-CD-project
+$
+
+3. Copy and paste these exact commands into that window one by one, pressing Enter after each:
+
+git init     ##Initialized empty Git repository in D:/Urge_PC/Documents/My_Doc/Docker-and-Kubernet-Learning/CI-CD-project/.git/
+
+git add .
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com
+git push -u origin main
+
+ 
