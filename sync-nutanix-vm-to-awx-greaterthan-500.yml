@@ -1,0 +1,458 @@
+---
+- name: Synchronize Nutanix Prism Element VMs to AWX Inventory
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+
+    # ============================================================
+    # Nutanix Prism Element
+    # ============================================================
+
+    prism_hostname: "10.12.22.200"
+
+    prism_username: "{{ lookup('env', 'NUTANIX_USERNAME') }}"
+    prism_password: "{{ lookup('env', 'NUTANIX_PASSWORD') }}"
+
+    # Maximum number of VMs returned by Prism Element API per request
+    prism_page_size: 500
+
+    # ============================================================
+    # AWX
+    # ============================================================
+
+    awx_inventory_id: 11
+    awx_hostname: "https://awx-test.cbo.com"
+
+
+  tasks:
+
+    # ============================================================
+    # 1. Verify Nutanix credentials
+    # ============================================================
+
+    - name: Verify Nutanix credential was injected
+      ansible.builtin.assert:
+        that:
+          - prism_username | length > 0
+          - prism_password | length > 0
+        fail_msg: >
+          Nutanix username/password were not injected by AWX.
+          Check the Nutanix custom credential configuration.
+
+
+    # ============================================================
+    # 2. Get FIRST page from Nutanix Prism Element
+    # ============================================================
+
+    - name: Get first page of Nutanix VMs
+      ansible.builtin.uri:
+        url: "https://{{ prism_hostname }}:9440/api/nutanix/v3/vms/list"
+        method: POST
+
+        user: "{{ prism_username }}"
+        password: "{{ prism_password }}"
+
+        force_basic_auth: true
+        validate_certs: false
+
+        headers:
+          Content-Type: "application/json"
+
+        body_format: json
+
+        body:
+          kind: "vm"
+          length: "{{ prism_page_size }}"
+          offset: 0
+
+        status_code: 200
+
+      register: nutanix_first_page
+
+      delegate_to: localhost
+
+
+    # ============================================================
+    # 3. Determine total number of VMs
+    # ============================================================
+
+    - name: Determine total number of Nutanix VMs
+      ansible.builtin.set_fact:
+        nutanix_total_vms: >-
+          {{
+            nutanix_first_page.json.metadata.total_matches
+            | default(
+                nutanix_first_page.json.entities | default([]) | length,
+                true
+              )
+          }}
+
+
+    - name: Display total Nutanix VM count
+      ansible.builtin.debug:
+        msg:
+          - "Total VMs reported by Prism Element: {{ nutanix_total_vms }}"
+          - "First page contains: {{ nutanix_first_page.json.entities | default([]) | length }}"
+
+
+    # ============================================================
+    # 4. Initialize complete VM list
+    # ============================================================
+
+    - name: Initialize complete Nutanix VM list
+      ansible.builtin.set_fact:
+        all_nutanix_vms: >-
+          {{
+            nutanix_first_page.json.entities
+            | default([])
+          }}
+
+
+    # ============================================================
+    # 5. Calculate pagination offsets
+    #
+    # Example:
+    #
+    # 583 VMs:
+    #   First request = offset 0
+    #   Second request = offset 500
+    #
+    # 1,200 VMs:
+    #   offset 0
+    #   offset 500
+    #   offset 1000
+    #
+    # 2,000 VMs:
+    #   offset 0
+    #   offset 500
+    #   offset 1000
+    #   offset 1500
+    #
+    # ============================================================
+
+    - name: Calculate remaining pagination offsets
+      ansible.builtin.set_fact:
+        nutanix_offsets: >-
+          {{
+            range(
+              prism_page_size,
+              nutanix_total_vms,
+              prism_page_size
+            )
+            | list
+          }}
+
+
+    - name: Display pagination information
+      ansible.builtin.debug:
+        msg:
+          - "Total VMs: {{ nutanix_total_vms }}"
+          - "Page size: {{ prism_page_size }}"
+          - "Additional page offsets: {{ nutanix_offsets }}"
+          - "Number of additional API requests: {{ nutanix_offsets | length }}"
+
+
+    # ============================================================
+    # 6. Get remaining VM pages
+    # ============================================================
+
+    - name: Get remaining pages of Nutanix VMs
+      ansible.builtin.uri:
+        url: "https://{{ prism_hostname }}:9440/api/nutanix/v3/vms/list"
+        method: POST
+
+        user: "{{ prism_username }}"
+        password: "{{ prism_password }}"
+
+        force_basic_auth: true
+        validate_certs: false
+
+        headers:
+          Content-Type: "application/json"
+
+        body_format: json
+
+        body:
+          kind: "vm"
+          length: "{{ prism_page_size }}"
+          offset: "{{ item }}"
+
+        status_code: 200
+
+      register: nutanix_remaining_pages
+
+      loop: "{{ nutanix_offsets }}"
+
+      loop_control:
+        label: "Getting VMs starting at offset {{ item }}"
+
+      delegate_to: localhost
+
+      when:
+        - nutanix_offsets | length > 0
+
+
+    # ============================================================
+    # 7. Add remaining pages to complete VM list
+    # ============================================================
+
+    - name: Combine all Nutanix VM pages
+      ansible.builtin.set_fact:
+        all_nutanix_vms: >-
+          {{
+            all_nutanix_vms
+            +
+            (
+              item.json.entities
+              | default([])
+            )
+          }}
+
+      loop: "{{ nutanix_remaining_pages.results | default([]) }}"
+
+      loop_control:
+        label: >-
+          Offset {{ item.item | default('unknown') }}
+
+
+    # ============================================================
+    # 8. Verify final VM count
+    # ============================================================
+
+    - name: Display final discovered VM count
+      ansible.builtin.debug:
+        msg:
+          - "=============================================="
+          - "Prism Element VM Discovery"
+          - "=============================================="
+          - "Prism reported total VMs : {{ nutanix_total_vms }}"
+          - "VMs retrieved by AWX     : {{ all_nutanix_vms | length }}"
+          - "=============================================="
+
+
+    # ============================================================
+    # 9. Validate VM discovery
+    # ============================================================
+
+    - name: Verify all Nutanix VMs were retrieved
+      ansible.builtin.assert:
+        that:
+          - all_nutanix_vms | length == nutanix_total_vms
+        fail_msg: >
+          VM discovery is incomplete.
+          Prism reported {{ nutanix_total_vms }} VMs,
+          but only {{ all_nutanix_vms | length }} VMs were retrieved.
+        success_msg: >
+          Successfully retrieved all {{ all_nutanix_vms | length }}
+          Nutanix VMs from Prism Element.
+
+
+    # ============================================================
+    # 10. Create Linux group
+    # ============================================================
+
+    - name: Create Linux group in AWX
+      awx.awx.group:
+        name: Linux
+        inventory: "{{ awx_inventory_id }}"
+        state: present
+
+        controller_host: "{{ awx_hostname }}"
+        validate_certs: false
+
+      delegate_to: localhost
+
+
+    # ============================================================
+    # 11. Create Windows group
+    # ============================================================
+
+    - name: Create Windows group in AWX
+      awx.awx.group:
+        name: Windows
+        inventory: "{{ awx_inventory_id }}"
+        state: present
+
+        controller_host: "{{ awx_hostname }}"
+        validate_certs: false
+
+      delegate_to: localhost
+
+
+    # ============================================================
+    # 12. Create/update all Nutanix VM hosts in AWX
+    # ============================================================
+
+    - name: Create or update Nutanix VM hosts in AWX
+      awx.awx.host:
+        name: "{{ item.spec.name }}"
+
+        inventory: "{{ awx_inventory_id }}"
+
+        state: present
+
+        controller_host: "{{ awx_hostname }}"
+        validate_certs: false
+
+        description: >-
+          Nutanix Prism Element VM -
+          {{
+            item.spec.resources.guest_os_name
+            | default('Unknown OS', true)
+          }}
+
+        variables:
+
+          ansible_host: >-
+            {{
+              item.status.resources.nic_list[0].ip_endpoint_list[0].ip
+              | default('', true)
+            }}
+
+          nutanix_os: >-
+            {{
+              item.spec.resources.guest_os_name
+              | default('Unknown OS', true)
+            }}
+
+          nutanix_power_state: >-
+            {{
+              item.spec.resources.power_state
+              | default('Unknown', true)
+            }}
+
+          nutanix_uuid: >-
+            {{
+              item.metadata.uuid
+              | default('', true)
+            }}
+
+      loop: "{{ all_nutanix_vms }}"
+
+      loop_control:
+        label: "{{ item.spec.name | default('Unknown VM') }}"
+
+      when:
+        - item.spec.name is defined
+        - item.spec.name | length > 0
+
+      delegate_to: localhost
+
+
+    # ============================================================
+    # 13. Add Windows VMs to Windows group
+    # ============================================================
+
+    - name: Add Windows VMs to Windows group
+      awx.awx.group:
+        name: Windows
+
+        inventory: "{{ awx_inventory_id }}"
+
+        hosts:
+          - "{{ item.spec.name }}"
+
+        state: present
+
+        controller_host: "{{ awx_hostname }}"
+        validate_certs: false
+
+      loop: "{{ all_nutanix_vms }}"
+
+      loop_control:
+        label: "{{ item.spec.name | default('Unknown VM') }}"
+
+      when:
+        - item.spec.name is defined
+        - item.spec.name | length > 0
+        - item.spec.resources.guest_os_name is defined
+        - "'windows' in (item.spec.resources.guest_os_name | lower)"
+
+      delegate_to: localhost
+
+
+    # ============================================================
+    # 14. Add Linux VMs to Linux group
+    # ============================================================
+
+    - name: Add Linux VMs to Linux group
+      awx.awx.group:
+        name: Linux
+
+        inventory: "{{ awx_inventory_id }}"
+
+        hosts:
+          - "{{ item.spec.name }}"
+
+        state: present
+
+        controller_host: "{{ awx_hostname }}"
+        validate_certs: false
+
+      loop: "{{ all_nutanix_vms }}"
+
+      loop_control:
+        label: "{{ item.spec.name | default('Unknown VM') }}"
+
+      when:
+        - item.spec.name is defined
+        - item.spec.name | length > 0
+        - item.spec.resources.guest_os_name is defined
+        - "'windows' not in (item.spec.resources.guest_os_name | lower)"
+
+      delegate_to: localhost
+
+
+    # ============================================================
+    # 15. Display VM classification
+    # ============================================================
+
+    - name: Display VM classification
+      ansible.builtin.debug:
+        msg:
+          VM: "{{ item.spec.name | default('Unknown') }}"
+          OS: >-
+            {{
+              item.spec.resources.guest_os_name
+              | default('Unknown OS', true)
+            }}
+          Group: >-
+            {{
+              'Windows'
+              if (
+                item.spec.resources.guest_os_name is defined
+                and
+                'windows' in (
+                  item.spec.resources.guest_os_name | lower
+                )
+              )
+              else
+              'Linux'
+            }}
+
+      loop: "{{ all_nutanix_vms }}"
+
+      loop_control:
+        label: "{{ item.spec.name | default('Unknown VM') }}"
+
+      when:
+        - item.spec.name is defined
+
+
+    # ============================================================
+    # 16. Final synchronization summary
+    # ============================================================
+
+    - name: Display synchronization summary
+      ansible.builtin.debug:
+        msg:
+          - "=============================================="
+          - "Nutanix Prism Element synchronization complete"
+          - "=============================================="
+          - "Prism reported VMs : {{ nutanix_total_vms }}"
+          - "VMs retrieved      : {{ all_nutanix_vms | length }}"
+          - "AWX Inventory ID   : {{ awx_inventory_id }}"
+          - "Linux Group        : Linux"
+          - "Windows Group      : Windows"
+          - "=============================================="
