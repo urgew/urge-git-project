@@ -47,12 +47,43 @@ $
 
 3. Copy and paste these exact commands into that window one by one, pressing Enter after each:
 
-git init     ##Initialized empty Git repository in D:/Urge_PC/Documents/My_Doc/Docker-and-Kubernet-Learning/CI-CD-project/.git/
-
+git init       ##Initialized empty Git repository in D:/Urge_PC/Documents/My_Doc/Docker-and-Kubernet-Learning/CI-CD-project/.git/
 git add .
-git commit -m "first commit"
+git commit -m "first commit"  
+  output
+   ------
+ : [master (root-commit) c4cc7f4] first commit
+ Committer: Urge Wakjira Terfa <urge.wakjira@coopbankoromiasc.com>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 2 files changed, 77 insertions(+)
+ create mode 100644 .github/workflows/ci.yml
+ create mode 100644 CI-CD concepts and tools.txt
+
 git branch -M main
-git remote add origin https://github.com
+git remote set-url origin https://github.com/urgew/urge-git-project
 git push -u origin main
 
+
+------->then now go to authorization page --------------
+Congratulations, you're all set!
+
+Your device is now connected.
+--------------------------------------------------------
  
+Your Daily Routine with Git
+ -- whenever you make changes to your .github/workflows/ci.yml file or any other code files, 
+you will follow these 3 simple steps:
+1. git add .                           (Stages all your new changes)
+2. git commit -m "your message here"   (Saves a new snapshot on your laptop)
+3. git push
