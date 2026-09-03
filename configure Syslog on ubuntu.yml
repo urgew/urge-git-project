@@ -1,0 +1,41 @@
+---
+- name: Configure TCP Syslog Forwarding on Ubuntu 22.04
+  hosts: all
+  become: true
+  gather_facts: false
+
+  vars:
+    syslog_server: "10.1.221.10"
+    syslog_port: 514
+
+  tasks:
+
+    - name: Configure remote TCP syslog forwarding
+      ansible.builtin.copy:
+        dest: /etc/rsyslog.d/60-remote.conf
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          # Forward all logs to central syslog server using TCP
+          *.* @@{{ syslog_server }}:{{ syslog_port }}
+      notify: Restart rsyslog
+
+    - name: Validate rsyslog configuration
+      ansible.builtin.command:
+        cmd: rsyslogd -N1
+      register: rsyslog_validation
+      changed_when: false
+
+    - name: Ensure rsyslog is enabled and running
+      ansible.builtin.systemd:
+        name: rsyslog
+        enabled: true
+        state: started
+
+  handlers:
+
+    - name: Restart rsyslog
+      ansible.builtin.systemd:
+        name: rsyslog
+        state: restarted

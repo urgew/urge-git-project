@@ -14,7 +14,7 @@
     prism_username: "{{ lookup('env', 'NUTANIX_USERNAME') }}"
     prism_password: "{{ lookup('env', 'NUTANIX_PASSWORD') }}"
 
-    # Prism Element maximum page size
+    # Prism Element API maximum page size
     prism_page_size: 500
 
     # ============================================================
@@ -61,6 +61,8 @@
 
         body_format: raw
 
+        # IMPORTANT:
+        # Generate real JSON integers for length and offset.
         body: >-
           {{
             {
@@ -101,8 +103,8 @@
           - "=============================================="
           - "Prism Element VM Discovery"
           - "=============================================="
-          - "Total VMs reported by Prism : {{ nutanix_total_vms }}"
-          - "First page contains         : {{ nutanix_first_page.json.entities | default([]) | length }}"
+          - "Total VMs reported by Prism : {{ nutanix_total_vms | int }}"
+          - "First page contains         : {{ nutanix_first_page.json.entities | default([]) | length | int }}"
           - "=============================================="
 
 
@@ -139,10 +141,10 @@
     - name: Display pagination information
       ansible.builtin.debug:
         msg:
-          - "Total VMs              : {{ nutanix_total_vms }}"
-          - "Page size              : {{ prism_page_size }}"
-          - "Additional page offsets: {{ nutanix_offsets }}"
-          - "Additional API requests: {{ nutanix_offsets | length }}"
+          - "Total VMs                 : {{ nutanix_total_vms | int }}"
+          - "Page size                 : {{ prism_page_size | int }}"
+          - "Additional page offsets   : {{ nutanix_offsets }}"
+          - "Additional API requests  : {{ nutanix_offsets | length }}"
 
 
     # ============================================================
@@ -163,19 +165,16 @@
         headers:
           Content-Type: "application/json"
 
-        # IMPORTANT:
-        # Use raw JSON generated with to_json.
-        # This ensures offset is a JSON INTEGER,
-        # not a STRING.
-
         body_format: raw
 
+        # IMPORTANT:
+        # to_json forces offset to be a JSON integer.
         body: >-
           {{
             {
               "kind": "vm",
               "length": 500,
-              "offset": item | int
+              "offset": (item | int)
             } | to_json
           }}
 
@@ -213,11 +212,21 @@
       loop: "{{ nutanix_remaining_pages.results | default([]) }}"
 
       loop_control:
-        label: "Adding page from offset {{ item.item | default('unknown') }}"
+        label: >-
+          Adding page from offset {{ item.item | default('unknown') }}
 
 
     # ============================================================
-    # 8. Display final VM count
+    # 8. Calculate final retrieved VM count
+    # ============================================================
+
+    - name: Calculate final retrieved VM count
+      ansible.builtin.set_fact:
+        nutanix_retrieved_vms: "{{ all_nutanix_vms | length | int }}"
+
+
+    # ============================================================
+    # 9. Display final discovered VM count
     # ============================================================
 
     - name: Display final discovered VM count
@@ -226,32 +235,35 @@
           - "=============================================="
           - "Final Prism Element VM Discovery"
           - "=============================================="
-          - "Prism reported total VMs : {{ nutanix_total_vms }}"
-          - "VMs retrieved by AWX     : {{ all_nutanix_vms | length }}"
+          - "Prism reported total VMs : {{ nutanix_total_vms | int }}"
+          - "VMs retrieved by AWX     : {{ nutanix_retrieved_vms | int }}"
+          - "Difference               : {{ (nutanix_total_vms | int) - (nutanix_retrieved_vms | int) }}"
           - "=============================================="
 
 
     # ============================================================
-    # 9. Verify all VMs retrieved
+    # 10. Verify all VMs retrieved
     # ============================================================
 
     - name: Verify all Nutanix VMs were retrieved
       ansible.builtin.assert:
         that:
-          - all_nutanix_vms | length == nutanix_total_vms
+          - (nutanix_retrieved_vms | int) == (nutanix_total_vms | int)
 
         fail_msg: >
           VM discovery is incomplete.
-          Prism reported {{ nutanix_total_vms }} VMs,
-          but only {{ all_nutanix_vms | length }} VMs were retrieved.
+          Prism reported {{ nutanix_total_vms | int }} VMs,
+          but only {{ nutanix_retrieved_vms | int }} VMs were retrieved.
+          Difference:
+          {{ (nutanix_total_vms | int) - (nutanix_retrieved_vms | int) }}.
 
         success_msg: >
-          Successfully retrieved all {{ all_nutanix_vms | length }}
+          Successfully retrieved all {{ nutanix_retrieved_vms | int }}
           Nutanix VMs from Prism Element.
 
 
     # ============================================================
-    # 10. Create Linux group
+    # 11. Create Linux group
     # ============================================================
 
     - name: Create Linux group in AWX
@@ -267,7 +279,7 @@
 
 
     # ============================================================
-    # 11. Create Windows group
+    # 12. Create Windows group
     # ============================================================
 
     - name: Create Windows group in AWX
@@ -283,7 +295,7 @@
 
 
     # ============================================================
-    # 12. Create/update ALL Nutanix VM hosts in AWX
+    # 13. Create/update ALL Nutanix VM hosts in AWX
     # ============================================================
 
     - name: Create or update Nutanix VM hosts in AWX
@@ -343,7 +355,7 @@
 
 
     # ============================================================
-    # 13. Add Windows VMs to Windows group
+    # 14. Add Windows VMs to Windows group
     # ============================================================
 
     - name: Add Windows VMs to Windows group
@@ -375,7 +387,7 @@
 
 
     # ============================================================
-    # 14. Add Linux VMs to Linux group
+    # 15. Add Linux VMs to Linux group
     # ============================================================
 
     - name: Add Linux VMs to Linux group
@@ -407,7 +419,7 @@
 
 
     # ============================================================
-    # 15. Display VM classification
+    # 16. Display VM classification
     # ============================================================
 
     - name: Display VM classification
@@ -443,7 +455,7 @@
 
 
     # ============================================================
-    # 16. Final synchronization summary
+    # 17. Final synchronization summary
     # ============================================================
 
     - name: Display synchronization summary
@@ -452,8 +464,8 @@
           - "=============================================="
           - "Nutanix Prism Element synchronization complete"
           - "=============================================="
-          - "Prism reported VMs : {{ nutanix_total_vms }}"
-          - "VMs retrieved      : {{ all_nutanix_vms | length }}"
+          - "Prism reported VMs : {{ nutanix_total_vms | int }}"
+          - "VMs retrieved      : {{ nutanix_retrieved_vms | int }}"
           - "AWX Inventory ID   : {{ awx_inventory_id }}"
           - "Linux Group        : Linux"
           - "Windows Group      : Windows"
