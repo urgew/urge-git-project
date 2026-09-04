@@ -17,3 +17,10 @@ jobs:
 
     - name: Run a quick test
       run: echo "Hello! Your GitHub Action is working perfectly!"
+
+        # Add this step inside your existing ci.yml jobs -> steps
+    - name: Run Ansible Lint
+      uses: ansible/ansible-lint-action@v6
+      with:
+        targets: |
+          *.yml
