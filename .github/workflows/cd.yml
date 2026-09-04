@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy-via-awx:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
     # Step 1: Tell AWX to pull the latest playbook code from this GitHub repository
