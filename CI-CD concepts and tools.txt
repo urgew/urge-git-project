@@ -87,3 +87,13 @@ you will follow these 3 simple steps:
 1. git add .                           (Stages all your new changes)
 2. git commit -m "your message here"   (Saves a new snapshot on your laptop)
 3. git push
+
+
+-------if error is displayed during command above-------
+resolution:
+
+git add .
+git commit -m "Merge remote changes"
+git push origin main
+
+----------------------------------------------
