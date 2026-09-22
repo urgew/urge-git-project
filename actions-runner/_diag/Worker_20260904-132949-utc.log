@@ -1,0 +1,1735 @@
+[2026-09-04 13:29:49Z INFO HostContext] No proxy settings were found based on environmental variables (http_proxy/https_proxy/HTTP_PROXY/HTTPS_PROXY)
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known config file 'Credentials': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\.credentials'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known config file 'Runner': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\.runner'
+[2026-09-04 13:29:49Z INFO Worker] Version: 2.337.0
+[2026-09-04 13:29:49Z INFO Worker] Commit: 397b032cbf865e9c3ddfab89d533ec19325e1273
+[2026-09-04 13:29:49Z INFO Worker] Culture: en-US
+[2026-09-04 13:29:49Z INFO Worker] UI Culture: en-US
+[2026-09-04 13:29:49Z INFO Worker] Waiting to receive the job message from the channel.
+[2026-09-04 13:29:49Z INFO ProcessChannel] Receiving message of length 23166, with hash 'c5b9b31a6837c6d8d19176286c4e2429d0f5ee231471eeaab6a0bb7fb0e78bc2'
+[2026-09-04 13:29:49Z INFO Worker] Message received.
+[2026-09-04 13:29:49Z INFO Worker] Job message:
+ {
+  "fileTable": [
+    ".github/workflows/cd.yml"
+  ],
+  "mask": [
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    },
+    {
+      "type": "regex",
+      "value": "***"
+    }
+  ],
+  "steps": [
+    {
+      "type": "action",
+      "reference": {
+        "type": "script"
+      },
+      "displayNameToken": {
+        "type": 0,
+        "file": 1,
+        "line": 13,
+        "col": 13,
+        "lit": "Sync AWX Project Source Code"
+      },
+      "contextName": "__run",
+      "inputs": {
+        "type": 2,
+        "map": [
+          {
+            "key": "script",
+            "value": {
+              "type": 3,
+              "file": 1,
+              "line": 14,
+              "col": 12,
+              "expr": "format('curl -X POST \\\n  -H \"Authorization: ***" \\\n  -H \"Content-Type: application/json\" \\\n  -k \\\n  \"{1}/api/v2/projects/{2}/update/\"\n', secrets.AWX_TOKEN, secrets.AWX_HOST, secrets.AWX_PROJECT_ID)"
+            }
+          }
+        ]
+      },
+      "condition": "success()",
+      "id": "9ede801d-cc6d-49d0-b976-20e9aca2c6e6",
+      "name": "__run"
+    },
+    {
+      "type": "action",
+      "reference": {
+        "type": "script"
+      },
+      "displayNameToken": {
+        "type": 0,
+        "file": 1,
+        "line": 22,
+        "col": 13,
+        "lit": "Wait for Sync"
+      },
+      "contextName": "__run_2",
+      "inputs": {
+        "type": 2,
+        "map": [
+          {
+            "key": "script",
+            "value": {
+              "type": 0,
+              "file": 1,
+              "line": 23,
+              "col": 12,
+              "lit": "sleep 10"
+            }
+          }
+        ]
+      },
+      "condition": "success()",
+      "id": "fc0d14c2-edfe-4b48-bad3-45141a428dc5",
+      "name": "__run_2"
+    },
+    {
+      "type": "action",
+      "reference": {
+        "type": "script"
+      },
+      "displayNameToken": {
+        "type": 0,
+        "file": 1,
+        "line": 26,
+        "col": 13,
+        "lit": "Launch AWX Deployment Template"
+      },
+      "contextName": "__run_3",
+      "inputs": {
+        "type": 2,
+        "map": [
+          {
+            "key": "script",
+            "value": {
+              "type": 3,
+              "file": 1,
+              "line": 27,
+              "col": 12,
+              "expr": "format('curl -X POST \\\n  -H \"Authorization: ***" \\\n  -H \"Content-Type: application/json\" \\\n  -d ''{{\"extra_vars\": {{\"git_commit_sha\": \"{1}\"}}}}'' \\\n  -k \\\n  \"{2}/api/v2/job_templates/{3}/launch/\"\n', secrets.AWX_TOKEN, github.sha, secrets.AWX_HOST, secrets.AWX_TEMPLATE_ID)"
+            }
+          }
+        ]
+      },
+      "condition": "success()",
+      "id": "272bd7e9-3571-427d-8b7d-54a39d662816",
+      "name": "__run_3"
+    }
+  ],
+  "variables": {
+    "Actions.EnableHttpRedirects": {
+      "value": "true"
+    },
+    "DistributedTask.AddWarningToNode12Action": {
+      "value": "true"
+    },
+    "DistributedTask.AddWarningToNode16Action": {
+      "value": "true"
+    },
+    "DistributedTask.AllowRunnerContainerHooks": {
+      "value": "true"
+    },
+    "DistributedTask.DeprecateStepOutputCommands": {
+      "value": "true"
+    },
+    "DistributedTask.DetailUntarFailure": {
+      "value": "true"
+    },
+    "DistributedTask.EnableCompositeActions": {
+      "value": "true"
+    },
+    "DistributedTask.EnableJobServerQueueTelemetry": {
+      "value": "true"
+    },
+    "DistributedTask.EnhancedAnnotations": {
+      "value": "true"
+    },
+    "DistributedTask.ForceGithubJavascriptActionsToNode16": {
+      "value": "true"
+    },
+    "DistributedTask.ForceGithubJavascriptActionsToNode20": {
+      "value": "true"
+    },
+    "DistributedTask.LogTemplateErrorsAsDebugMessages": {
+      "value": "true"
+    },
+    "DistributedTask.MarkJobAsFailedOnWorkerCrash": {
+      "value": "true"
+    },
+    "DistributedTask.NewActionMetadata": {
+      "value": "true"
+    },
+    "DistributedTask.UploadStepSummary": {
+      "value": "true"
+    },
+    "DistributedTask.UseActionArchiveCache": {
+      "value": "true"
+    },
+    "DistributedTask.UseWhich2": {
+      "value": "true"
+    },
+    "RunService.FixEmbeddedIssues": {
+      "value": "true"
+    },
+    "actions.runner.requirenode24": {
+      "value": "false"
+    },
+    "actions.runner.usenode24bydefault": {
+      "value": "true"
+    },
+    "actions.runner.warnonnode20": {
+      "value": "true"
+    },
+    "actions_add_check_run_id_to_job_context": {
+      "value": "true"
+    },
+    "actions_batch_action_resolution": {
+      "value": "false"
+    },
+    "actions_container_action_runner_temp": {
+      "value": "true"
+    },
+    "actions_display_helpful_actions_download_errors": {
+      "value": "true"
+    },
+    "actions_runner_allow_artifacts_file": {
+      "value": "false"
+    },
+    "actions_runner_compare_workflow_parser": {
+      "value": "false"
+    },
+    "actions_runner_deprecate_linux_arm32": {
+      "value": "true"
+    },
+    "actions_runner_emit_composite_markers": {
+      "value": "true"
+    },
+    "actions_runner_kill_linux_arm32": {
+      "value": "false"
+    },
+    "actions_runner_node20_removal_date": {
+      "value": ""
+    },
+    "actions_runner_node24_default_date": {
+      "value": "June 16th, 2026"
+    },
+    "actions_self_repository": {
+      "value": "true"
+    },
+    "actions_service_container_command": {
+      "value": "true"
+    },
+    "actions_set_orchestration_id_env_for_actions": {
+      "value": "true"
+    },
+    "actions_skip_retry_complete_job_upon_known_errors": {
+      "value": "true"
+    },
+    "actions_snapshot_preflight_hosted_runner_check": {
+      "value": "false"
+    },
+    "actions_snapshot_preflight_image_gen_pool_check": {
+      "value": "false"
+    },
+    "actions_use_bearer_token_for_codeload": {
+      "value": "false"
+    },
+    "actions_uses_cache_service_v2": {
+      "value": "true"
+    },
+    "github_token": {
+      "value": "***",
+      "isSecret": true
+    },
+    "system.from_run_service": {
+      "value": "true"
+    },
+    "system.github.job": {
+      "value": "deploy-via-awx"
+    },
+    "system.github.launch_endpoint": {
+      "value": "https://launch.actions.githubusercontent.com"
+    },
+    "system.github.results_endpoint": {
+      "value": "https://results-receiver.actions.githubusercontent.com/"
+    },
+    "system.github.results_upload_with_sdk": {
+      "value": "true"
+    },
+    "system.github.token": {
+      "value": "***",
+      "isSecret": true
+    },
+    "system.github.token.permissions": {
+      "value": "{\"Contents\":\"read\",\"Metadata\":\"read\",\"Packages\":\"read\"}"
+    },
+    "system.orchestrationId": {
+      "value": "36481410-74a0-43cc-bb1a-909583dd2684.deploy-via-awx.__default"
+    },
+    "system.phaseDisplayName": {
+      "value": "deploy-via-awx"
+    },
+    "system.runner.lowdiskspacethreshold": {
+      "value": "100"
+    },
+    "system.runnerEnvironment": {
+      "value": "self-hosted"
+    },
+    "system.runnerGroupName": {
+      "value": "Default"
+    }
+  },
+  "messageType": "RunnerJobRequest",
+  "plan": {
+    "scopeIdentifier": "00000000-0000-0000-0000-000000000000",
+    "planType": "actions",
+    "version": 0,
+    "planId": "36481410-74a0-43cc-bb1a-909583dd2684",
+    "planGroup": null,
+    "artifactUri": null,
+    "artifactLocation": null,
+    "definition": null,
+    "owner": null
+  },
+  "timeline": {
+    "id": "36481410-74a0-43cc-bb1a-909583dd2684",
+    "changeId": 0,
+    "location": null
+  },
+  "jobId": "b0506ae2-e459-5c8e-bf05-76850cd3e177",
+  "jobDisplayName": "deploy-via-awx",
+  "jobName": "__default",
+  "requestId": 0,
+  "lockedUntil": "0001-01-01T00:00:00",
+  "resources": {
+    "endpoints": [
+      {
+        "data": {
+          "ServerId": "",
+          "ServerName": "",
+          "CacheServerUrl": "https://artifactcache.actions.githubusercontent.com/MThrQJkAvuDgtDruZ5XzhBZYnowl3dz8XrkQDXrANdgnoPw4u4/",
+          "FeedStreamUrl": "wss://results-receiver.actions.githubusercontent.com/_ws/ingest.sock",
+          "ResultsServiceUrl": "https://results-receiver.actions.githubusercontent.com/",
+          "PipelinesServiceUrl": "https://pipelinesghubeus14.actions.githubusercontent.com/MThrQJkAvuDgtDruZ5XzhBZYnowl3dz8XrkQDXrANdgnoPw4u4/",
+          "GenerateIdTokenUrl": "",
+          "ConnectivityChecks": "[\"https://broker.actions.githubusercontent.com/health\",\"https://token.actions.githubusercontent.com/ready\",\"https://run.actions.githubusercontent.com/health\"]",
+          "ConnectivityAndDNSChecks": ""
+        },
+        "name": "SystemVssConnection",
+        "url": "https://run-actions-2-azure-eastus.actions.githubusercontent.com/234/",
+        "authorization": {
+          "parameters": {
+            "AccessToken": "***"
+          },
+          "scheme": "OAuth"
+        },
+        "isShared": false,
+        "isReady": true
+      }
+    ]
+  },
+  "contextData": {
+    "github": {
+      "t": 2,
+      "d": [
+        {
+          "k": "ref",
+          "v": "refs/heads/main"
+        },
+        {
+          "k": "sha",
+          "v": "0811cbab662309db80d64f0062b608cfb8ed4853"
+        },
+        {
+          "k": "repository",
+          "v": "urgew/urge-git-project"
+        },
+        {
+          "k": "repository_owner",
+          "v": "urgew"
+        },
+        {
+          "k": "repository_owner_id",
+          "v": "35001266"
+        },
+        {
+          "k": "repositoryUrl",
+          "v": "git://github.com/urgew/urge-git-project.git"
+        },
+        {
+          "k": "run_id",
+          "v": "33869911939"
+        },
+        {
+          "k": "run_number",
+          "v": "3"
+        },
+        {
+          "k": "retention_days",
+          "v": "90"
+        },
+        {
+          "k": "run_attempt",
+          "v": "1"
+        },
+        {
+          "k": "artifact_cache_size_limit",
+          "v": "10"
+        },
+        {
+          "k": "repository_visibility",
+          "v": "public"
+        },
+        {
+          "k": "actor_id",
+          "v": "35001266"
+        },
+        {
+          "k": "actor",
+          "v": "urgew"
+        },
+        {
+          "k": "workflow",
+          "v": "Continuous Deployment via AWX"
+        },
+        {
+          "k": "head_ref",
+          "v": ""
+        },
+        {
+          "k": "base_ref",
+          "v": ""
+        },
+        {
+          "k": "event_name",
+          "v": "push"
+        },
+        {
+          "k": "server_url",
+          "v": "https://github.com"
+        },
+        {
+          "k": "api_url",
+          "v": "https://api.github.com"
+        },
+        {
+          "k": "graphql_url",
+          "v": "https://api.github.com/graphql"
+        },
+        {
+          "k": "ref_name",
+          "v": "main"
+        },
+        {
+          "k": "ref_protected",
+          "v": false
+        },
+        {
+          "k": "ref_type",
+          "v": "branch"
+        },
+        {
+          "k": "secret_source",
+          "v": "Actions"
+        },
+        {
+          "k": "event",
+          "v": {
+            "t": 2,
+            "d": [
+              {
+                "k": "after",
+                "v": "0811cbab662309db80d64f0062b608cfb8ed4853"
+              },
+              {
+                "k": "base_ref",
+                "v": null
+              },
+              {
+                "k": "before",
+                "v": "2069fd3572b9187333a55d527f8baf0c9d525ba5"
+              },
+              {
+                "k": "commits",
+                "v": {
+                  "t": 1,
+                  "a": [
+                    {
+                      "t": 2,
+                      "d": [
+                        {
+                          "k": "author",
+                          "v": {
+                            "t": 2,
+                            "d": [
+                              {
+                                "k": "email",
+                                "v": "urge.wakjira@coopbankoromiasc.com"
+                              },
+                              {
+                                "k": "name",
+                                "v": "Urge Wakjira Terfa"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "k": "committer",
+                          "v": {
+                            "t": 2,
+                            "d": [
+                              {
+                                "k": "email",
+                                "v": "urge.wakjira@coopbankoromiasc.com"
+                              },
+                              {
+                                "k": "name",
+                                "v": "Urge Wakjira Terfa"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "k": "distinct",
+                          "v": true
+                        },
+                        {
+                          "k": "id",
+                          "v": "f644b69ea45ddd5b632424fae2335343c76e184b"
+                        },
+                        {
+                          "k": "message",
+                          "v": "add task in ci.yaml ansible"
+                        },
+                        {
+                          "k": "timestamp",
+                          "v": "2026-09-04T14:35:12+03:00"
+                        },
+                        {
+                          "k": "tree_id",
+                          "v": "3f3af639b4b022aa075d6980c64ce4028401f38d"
+                        },
+                        {
+                          "k": "url",
+                          "v": "https://github.com/urgew/urge-git-project/commit/f644b69ea45ddd5b632424fae2335343c76e184b"
+                        }
+                      ]
+                    },
+                    {
+                      "t": 2,
+                      "d": [
+                        {
+                          "k": "author",
+                          "v": {
+                            "t": 2,
+                            "d": [
+                              {
+                                "k": "email",
+                                "v": "urge.wakjira@coopbankoromiasc.com"
+                              },
+                              {
+                                "k": "name",
+                                "v": "Urge Wakjira Terfa"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "k": "committer",
+                          "v": {
+                            "t": 2,
+                            "d": [
+                              {
+                                "k": "email",
+                                "v": "urge.wakjira@coopbankoromiasc.com"
+                              },
+                              {
+                                "k": "name",
+                                "v": "Urge Wakjira Terfa"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "k": "distinct",
+                          "v": true
+                        },
+                        {
+                          "k": "id",
+                          "v": "0811cbab662309db80d64f0062b608cfb8ed4853"
+                        },
+                        {
+                          "k": "message",
+                          "v": "change cd"
+                        },
+                        {
+                          "k": "timestamp",
+                          "v": "2026-09-04T14:50:56+03:00"
+                        },
+                        {
+                          "k": "tree_id",
+                          "v": "c0cc18004b55f3e10aa6290ca486f374ca51734d"
+                        },
+                        {
+                          "k": "url",
+                          "v": "https://github.com/urgew/urge-git-project/commit/0811cbab662309db80d64f0062b608cfb8ed4853"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "k": "compare",
+                "v": "https://github.com/urgew/urge-git-project/compare/2069fd3572b9...0811cbab6623"
+              },
+              {
+                "k": "created",
+                "v": false
+              },
+              {
+                "k": "deleted",
+                "v": false
+              },
+              {
+                "k": "forced",
+                "v": false
+              },
+              {
+                "k": "head_commit",
+                "v": {
+                  "t": 2,
+                  "d": [
+                    {
+                      "k": "author",
+                      "v": {
+                        "t": 2,
+                        "d": [
+                          {
+                            "k": "email",
+                            "v": "urge.wakjira@coopbankoromiasc.com"
+                          },
+                          {
+                            "k": "name",
+                            "v": "Urge Wakjira Terfa"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "k": "committer",
+                      "v": {
+                        "t": 2,
+                        "d": [
+                          {
+                            "k": "email",
+                            "v": "urge.wakjira@coopbankoromiasc.com"
+                          },
+                          {
+                            "k": "name",
+                            "v": "Urge Wakjira Terfa"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "k": "distinct",
+                      "v": true
+                    },
+                    {
+                      "k": "id",
+                      "v": "0811cbab662309db80d64f0062b608cfb8ed4853"
+                    },
+                    {
+                      "k": "message",
+                      "v": "change cd"
+                    },
+                    {
+                      "k": "timestamp",
+                      "v": "2026-09-04T14:50:56+03:00"
+                    },
+                    {
+                      "k": "tree_id",
+                      "v": "c0cc18004b55f3e10aa6290ca486f374ca51734d"
+                    },
+                    {
+                      "k": "url",
+                      "v": "https://github.com/urgew/urge-git-project/commit/0811cbab662309db80d64f0062b608cfb8ed4853"
+                    }
+                  ]
+                }
+              },
+              {
+                "k": "pusher",
+                "v": {
+                  "t": 2,
+                  "d": [
+                    {
+                      "k": "email",
+                      "v": "35001266+urgew@users.noreply.github.com"
+                    },
+                    {
+                      "k": "name",
+                      "v": "urgew"
+                    }
+                  ]
+                }
+              },
+              {
+                "k": "ref",
+                "v": "refs/heads/main"
+              },
+              {
+                "k": "repository",
+                "v": {
+                  "t": 2,
+                  "d": [
+                    {
+                      "k": "allow_forking",
+                      "v": true
+                    },
+                    {
+                      "k": "archive_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/{archive_format}{/ref}"
+                    },
+                    {
+                      "k": "archived",
+                      "v": false
+                    },
+                    {
+                      "k": "assignees_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/assignees{/user}"
+                    },
+                    {
+                      "k": "blobs_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/git/blobs{/sha}"
+                    },
+                    {
+                      "k": "branches_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/branches{/branch}"
+                    },
+                    {
+                      "k": "clone_url",
+                      "v": "https://github.com/urgew/urge-git-project.git"
+                    },
+                    {
+                      "k": "collaborators_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/collaborators{/collaborator}"
+                    },
+                    {
+                      "k": "comments_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/comments{/number}"
+                    },
+                    {
+                      "k": "commits_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/commits{/sha}"
+                    },
+                    {
+                      "k": "compare_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/compare/{base}...{head}"
+                    },
+                    {
+                      "k": "contents_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/contents/{+path}"
+                    },
+                    {
+                      "k": "contributors_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/contributors"
+                    },
+                    {
+                      "k": "created_at",
+                      "v": 1788178075.0
+                    },
+                    {
+                      "k": "default_branch",
+                      "v": "main"
+                    },
+                    {
+                      "k": "deployments_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/deployments"
+                    },
+                    {
+                      "k": "description",
+                      "v": null
+                    },
+                    {
+                      "k": "disabled",
+                      "v": false
+                    },
+                    {
+                      "k": "downloads_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/downloads"
+                    },
+                    {
+                      "k": "events_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/events"
+                    },
+                    {
+                      "k": "fork",
+                      "v": false
+                    },
+                    {
+                      "k": "forks",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "forks_count",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "forks_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/forks"
+                    },
+                    {
+                      "k": "full_name",
+                      "v": "urgew/urge-git-project"
+                    },
+                    {
+                      "k": "git_commits_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/git/commits{/sha}"
+                    },
+                    {
+                      "k": "git_refs_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/git/refs{/sha}"
+                    },
+                    {
+                      "k": "git_tags_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/git/tags{/sha}"
+                    },
+                    {
+                      "k": "git_url",
+                      "v": "git://github.com/urgew/urge-git-project.git"
+                    },
+                    {
+                      "k": "has_discussions",
+                      "v": false
+                    },
+                    {
+                      "k": "has_downloads",
+                      "v": true
+                    },
+                    {
+                      "k": "has_issues",
+                      "v": true
+                    },
+                    {
+                      "k": "has_pages",
+                      "v": false
+                    },
+                    {
+                      "k": "has_projects",
+                      "v": true
+                    },
+                    {
+                      "k": "has_pull_requests",
+                      "v": true
+                    },
+                    {
+                      "k": "has_wiki",
+                      "v": true
+                    },
+                    {
+                      "k": "homepage",
+                      "v": null
+                    },
+                    {
+                      "k": "hooks_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/hooks"
+                    },
+                    {
+                      "k": "html_url",
+                      "v": "https://github.com/urgew/urge-git-project"
+                    },
+                    {
+                      "k": "id",
+                      "v": 1352367112.0
+                    },
+                    {
+                      "k": "is_template",
+                      "v": false
+                    },
+                    {
+                      "k": "issue_comment_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/issues/comments{/number}"
+                    },
+                    {
+                      "k": "issue_events_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/issues/events{/number}"
+                    },
+                    {
+                      "k": "issues_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/issues{/number}"
+                    },
+                    {
+                      "k": "keys_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/keys{/key_id}"
+                    },
+                    {
+                      "k": "labels_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/labels{/name}"
+                    },
+                    {
+                      "k": "language",
+                      "v": null
+                    },
+                    {
+                      "k": "languages_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/languages"
+                    },
+                    {
+                      "k": "license",
+                      "v": null
+                    },
+                    {
+                      "k": "master_branch",
+                      "v": "main"
+                    },
+                    {
+                      "k": "merges_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/merges"
+                    },
+                    {
+                      "k": "milestones_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/milestones{/number}"
+                    },
+                    {
+                      "k": "mirror_url",
+                      "v": null
+                    },
+                    {
+                      "k": "name",
+                      "v": "urge-git-project"
+                    },
+                    {
+                      "k": "node_id",
+                      "v": "R_kgDOUJt8CA"
+                    },
+                    {
+                      "k": "notifications_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/notifications{?since,all,participating}"
+                    },
+                    {
+                      "k": "open_issues",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "open_issues_count",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "owner",
+                      "v": {
+                        "t": 2,
+                        "d": [
+                          {
+                            "k": "avatar_url",
+                            "v": "https://avatars.githubusercontent.com/u/35001266?v=4"
+                          },
+                          {
+                            "k": "email",
+                            "v": "35001266+urgew@users.noreply.github.com"
+                          },
+                          {
+                            "k": "events_url",
+                            "v": "https://api.github.com/users/urgew/events{/privacy}"
+                          },
+                          {
+                            "k": "followers_url",
+                            "v": "https://api.github.com/users/urgew/followers"
+                          },
+                          {
+                            "k": "following_url",
+                            "v": "https://api.github.com/users/urgew/following{/other_user}"
+                          },
+                          {
+                            "k": "gists_url",
+                            "v": "https://api.github.com/users/urgew/gists{/gist_id}"
+                          },
+                          {
+                            "k": "gravatar_id",
+                            "v": ""
+                          },
+                          {
+                            "k": "html_url",
+                            "v": "https://github.com/urgew"
+                          },
+                          {
+                            "k": "id",
+                            "v": 35001266.0
+                          },
+                          {
+                            "k": "login",
+                            "v": "urgew"
+                          },
+                          {
+                            "k": "name",
+                            "v": "urgew"
+                          },
+                          {
+                            "k": "node_id",
+                            "v": "MDQ6VXNlcjM1MDAxMjY2"
+                          },
+                          {
+                            "k": "organizations_url",
+                            "v": "https://api.github.com/users/urgew/orgs"
+                          },
+                          {
+                            "k": "received_events_url",
+                            "v": "https://api.github.com/users/urgew/received_events"
+                          },
+                          {
+                            "k": "repos_url",
+                            "v": "https://api.github.com/users/urgew/repos"
+                          },
+                          {
+                            "k": "site_admin",
+                            "v": false
+                          },
+                          {
+                            "k": "starred_url",
+                            "v": "https://api.github.com/users/urgew/starred{/owner}{/repo}"
+                          },
+                          {
+                            "k": "subscriptions_url",
+                            "v": "https://api.github.com/users/urgew/subscriptions"
+                          },
+                          {
+                            "k": "type",
+                            "v": "User"
+                          },
+                          {
+                            "k": "url",
+                            "v": "https://api.github.com/users/urgew"
+                          },
+                          {
+                            "k": "user_view_type",
+                            "v": "public"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "k": "private",
+                      "v": false
+                    },
+                    {
+                      "k": "pull_request_creation_policy",
+                      "v": "all"
+                    },
+                    {
+                      "k": "pulls_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/pulls{/number}"
+                    },
+                    {
+                      "k": "pushed_at",
+                      "v": 1788522686.0
+                    },
+                    {
+                      "k": "releases_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/releases{/id}"
+                    },
+                    {
+                      "k": "size",
+                      "v": 15.0
+                    },
+                    {
+                      "k": "ssh_url",
+                      "v": "git@github.com:urgew/urge-git-project.git"
+                    },
+                    {
+                      "k": "stargazers",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "stargazers_count",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "stargazers_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/stargazers"
+                    },
+                    {
+                      "k": "statuses_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/statuses/{sha}"
+                    },
+                    {
+                      "k": "subscribers_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/subscribers"
+                    },
+                    {
+                      "k": "subscription_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/subscription"
+                    },
+                    {
+                      "k": "svn_url",
+                      "v": "https://github.com/urgew/urge-git-project"
+                    },
+                    {
+                      "k": "tags_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/tags"
+                    },
+                    {
+                      "k": "teams_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/teams"
+                    },
+                    {
+                      "k": "topics",
+                      "v": {
+                        "t": 1
+                      }
+                    },
+                    {
+                      "k": "trees_url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project/git/trees{/sha}"
+                    },
+                    {
+                      "k": "updated_at",
+                      "v": "2026-09-04T11:28:54Z"
+                    },
+                    {
+                      "k": "url",
+                      "v": "https://api.github.com/repos/urgew/urge-git-project"
+                    },
+                    {
+                      "k": "visibility",
+                      "v": "public"
+                    },
+                    {
+                      "k": "watchers",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "watchers_count",
+                      "v": 0.0
+                    },
+                    {
+                      "k": "web_commit_signoff_required",
+                      "v": false
+                    }
+                  ]
+                }
+              },
+              {
+                "k": "sender",
+                "v": {
+                  "t": 2,
+                  "d": [
+                    {
+                      "k": "avatar_url",
+                      "v": "https://avatars.githubusercontent.com/u/35001266?v=4"
+                    },
+                    {
+                      "k": "events_url",
+                      "v": "https://api.github.com/users/urgew/events{/privacy}"
+                    },
+                    {
+                      "k": "followers_url",
+                      "v": "https://api.github.com/users/urgew/followers"
+                    },
+                    {
+                      "k": "following_url",
+                      "v": "https://api.github.com/users/urgew/following{/other_user}"
+                    },
+                    {
+                      "k": "gists_url",
+                      "v": "https://api.github.com/users/urgew/gists{/gist_id}"
+                    },
+                    {
+                      "k": "gravatar_id",
+                      "v": ""
+                    },
+                    {
+                      "k": "html_url",
+                      "v": "https://github.com/urgew"
+                    },
+                    {
+                      "k": "id",
+                      "v": 35001266.0
+                    },
+                    {
+                      "k": "login",
+                      "v": "urgew"
+                    },
+                    {
+                      "k": "node_id",
+                      "v": "MDQ6VXNlcjM1MDAxMjY2"
+                    },
+                    {
+                      "k": "organizations_url",
+                      "v": "https://api.github.com/users/urgew/orgs"
+                    },
+                    {
+                      "k": "received_events_url",
+                      "v": "https://api.github.com/users/urgew/received_events"
+                    },
+                    {
+                      "k": "repos_url",
+                      "v": "https://api.github.com/users/urgew/repos"
+                    },
+                    {
+                      "k": "site_admin",
+                      "v": false
+                    },
+                    {
+                      "k": "starred_url",
+                      "v": "https://api.github.com/users/urgew/starred{/owner}{/repo}"
+                    },
+                    {
+                      "k": "subscriptions_url",
+                      "v": "https://api.github.com/users/urgew/subscriptions"
+                    },
+                    {
+                      "k": "type",
+                      "v": "User"
+                    },
+                    {
+                      "k": "url",
+                      "v": "https://api.github.com/users/urgew"
+                    },
+                    {
+                      "k": "user_view_type",
+                      "v": "public"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "k": "workflow_ref",
+          "v": "urgew/urge-git-project/.github/workflows/cd.yml@refs/heads/main"
+        },
+        {
+          "k": "workflow_sha",
+          "v": "0811cbab662309db80d64f0062b608cfb8ed4853"
+        },
+        {
+          "k": "repository_id",
+          "v": "1352367112"
+        },
+        {
+          "k": "triggering_actor",
+          "v": "urgew"
+        }
+      ]
+    },
+    "inputs": {
+      "t": 2
+    },
+    "job": {
+      "t": 2,
+      "d": [
+        {
+          "k": "check_run_id",
+          "v": 101013172413.0
+        },
+        {
+          "k": "workflow_ref",
+          "v": "urgew/urge-git-project/.github/workflows/cd.yml@refs/heads/main"
+        },
+        {
+          "k": "workflow_sha",
+          "v": "0811cbab662309db80d64f0062b608cfb8ed4853"
+        },
+        {
+          "k": "workflow_repository",
+          "v": "urgew/urge-git-project"
+        },
+        {
+          "k": "workflow_file_path",
+          "v": ".github/workflows/cd.yml"
+        }
+      ]
+    },
+    "matrix": null,
+    "needs": {
+      "t": 2
+    },
+    "strategy": {
+      "t": 2,
+      "d": [
+        {
+          "k": "fail-fast",
+          "v": true
+        },
+        {
+          "k": "job-index",
+          "v": 0.0
+        },
+        {
+          "k": "job-total",
+          "v": 1.0
+        },
+        {
+          "k": "max-parallel",
+          "v": 1.0
+        }
+      ]
+    },
+    "vars": {
+      "t": 2
+    }
+  },
+  "billingOwnerId": "U_kgDOAhYTsg"
+}
+[2026-09-04 13:29:49Z INFO JobRunner] Job ID b0506ae2-e459-5c8e-bf05-76850cd3e177
+[2026-09-04 13:29:49Z INFO ConfigurationStore] currentAssemblyLocation: D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin\Runner.Worker.dll
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO ConfigurationStore] binPath: D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO ConfigurationStore] RootFolder: D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known config file 'Runner': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\.runner'
+[2026-09-04 13:29:49Z INFO ConfigurationStore] ConfigFilePath: D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\.runner
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known config file 'MigratedRunner': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\.runner_migrated'
+[2026-09-04 13:29:49Z INFO ConfigurationStore] MigratedConfigFilePath: D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\.runner_migrated
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known config file 'Credentials': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\.credentials'
+[2026-09-04 13:29:49Z INFO ConfigurationStore] CredFilePath: D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\.credentials
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known config file 'MigratedCredentials': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\.credentials_migrated'
+[2026-09-04 13:29:49Z INFO ConfigurationStore] MigratedCredFilePath: D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\.credentials_migrated
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known config file 'Service': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\.service'
+[2026-09-04 13:29:49Z INFO ConfigurationStore] ServiceConfigFilePath: D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\.service
+[2026-09-04 13:29:49Z INFO ConfigurationStore] Read setting file: 397 chars
+[2026-09-04 13:29:49Z INFO JobRunner] Initializing launch client
+[2026-09-04 13:29:49Z INFO JobServerQueue] Initializing results client
+[2026-09-04 13:29:49Z INFO ResultServer] Creating websocket client ...wss://results-receiver.actions.githubusercontent.com/_ws/ingest.sock
+[2026-09-04 13:29:49Z INFO ResultServer] Attempting to start websocket client with delay 00:00:00.
+[2026-09-04 13:29:49Z INFO JobServerQueue] Start process web console line queue.
+[2026-09-04 13:29:49Z INFO JobServerQueue] Start process file upload queue.
+[2026-09-04 13:29:49Z INFO JobServerQueue] Start results file upload queue.
+[2026-09-04 13:29:49Z INFO JobServerQueue] Starting results-based upload queue...
+[2026-09-04 13:29:49Z INFO JobServerQueue] Start process timeline update queue.
+[2026-09-04 13:29:49Z INFO ExecutionContext] Initializing Job context
+[2026-09-04 13:29:49Z INFO ExecutionContext] Initialize GitHub context
+[2026-09-04 13:29:49Z INFO ExecutionContext] Initialize Env context
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Diag': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_diag'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Diag': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_diag'
+[2026-09-04 13:29:49Z INFO JobRunner] Starting the job execution context.
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Work': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work'
+[2026-09-04 13:29:49Z INFO JobRunner] Validating directory permissions for: 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Work': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Tools': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work\_tool'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Work': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Temp': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work\_temp'
+[2026-09-04 13:29:49Z INFO JobRunner] Getting job extension.
+[2026-09-04 13:29:49Z INFO JobRunner] Initialize job. Getting all job steps.
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Diag': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_diag'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Diag': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_diag'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known config file 'Credentials': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\.credentials'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known config file 'SetupInfo': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\.setup_info'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Work': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work'
+[2026-09-04 13:29:49Z INFO PipelineDirectoryManager] Loading tracking config if exists: D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work\_PipelineMapping\urgew/urge-git-project\PipelineFolder.json
+[2026-09-04 13:29:49Z INFO PipelineDirectoryManager] Creating a new tracking config file.
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Work': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work'
+[2026-09-04 13:29:49Z INFO PipelineDirectoryManager] Creating pipeline directory.
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Work': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work'
+[2026-09-04 13:29:49Z INFO PipelineDirectoryManager] Creating workspace directory.
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Work': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work'
+[2026-09-04 13:29:49Z INFO JobExtension] Downloading actions
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Work': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Actions': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work\_actions'
+[2026-09-04 13:29:49Z INFO JobExtension] Adding .
+[2026-09-04 13:29:49Z INFO JobExtension] Adding .
+[2026-09-04 13:29:49Z INFO JobExtension] Adding .
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Diag': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_diag'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Diag': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_diag'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Diag': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_diag'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Diag': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_diag'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Diag': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_diag'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Diag': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_diag'
+[2026-09-04 13:29:49Z INFO JobExtension] Total accessible running process: 273.
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Work': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work'
+[2026-09-04 13:29:49Z INFO JobExtension] Start checking server connectivity.
+[2026-09-04 13:29:49Z INFO JobExtension] Check server connectivity for https://broker.actions.githubusercontent.com/health.
+[2026-09-04 13:29:49Z INFO JobExtension] Check server connectivity for https://token.actions.githubusercontent.com/ready.
+[2026-09-04 13:29:49Z INFO JobExtension] Check server connectivity for https://run.actions.githubusercontent.com/health.
+[2026-09-04 13:29:49Z INFO JobExtension] Start checking service connectivity in background.
+[2026-09-04 13:29:49Z INFO ExecutionContext] Publish step telemetry for current step {
+  "action": "setup_job",
+  "type": "runner",
+  "stage": "Pre",
+  "stepId": "b8c4d242-0d94-4096-8a46-e49961324be9",
+  "result": "succeeded",
+  "errorMessages": [],
+  "executionTimeInSeconds": 1,
+  "startTime": "2026-09-04T13:29:49.7067414Z",
+  "finishTime": "2026-09-04T13:29:49.7686255Z"
+}.
+[2026-09-04 13:29:49Z INFO JobRunner] Total job steps: 3.
+[2026-09-04 13:29:49Z INFO JobRunner] Run all job steps.
+[2026-09-04 13:29:49Z INFO DapDebugger] DapDebugger initialized
+[2026-09-04 13:29:49Z INFO StepsRunner] Processing step: DisplayName='Sync AWX Project Source Code'
+[2026-09-04 13:29:49Z INFO StepsRunner] Evaluating: success()
+[2026-09-04 13:29:49Z INFO StepsRunner] Result: true
+[2026-09-04 13:29:49Z INFO StepsRunner] Starting the step.
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Work': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work'
+[2026-09-04 13:29:49Z INFO StepsRunner] Which2: 'chcp'
+[2026-09-04 13:29:49Z INFO StepsRunner] Location: 'C:\Windows\system32\chcp.COM'
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper] Starting process:
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper]   File name: 'C:\Windows\system32\chcp.COM'
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper]   Arguments: '65001'
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper]   Working directory: 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work'
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper]   Require exit code zero: 'False'
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper]   Encoding web name:  ; code page: ''
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper]   Force kill process on cancellation: 'False'
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper]   Redirected STDIN: 'False'
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper]   Persist current code page: 'True'
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper]   Keep redirected STDIN open: 'False'
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper]   High priority process: 'False'
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper] Process started with process id 1664, waiting for process exit.
+[2026-09-04 13:29:49Z INFO Worker] Listening for cancel message from the channel.
+[2026-09-04 13:29:49Z INFO Worker] Waiting for the job to complete or for a cancel message from the channel.
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper] Finished process 1664 with exit code 0, and elapsed time 00:00:00.1606263.
+[2026-09-04 13:29:49Z INFO StepsRunner] Successfully returned to code page 65001 (UTF8)
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Work': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Temp': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work\_temp'
+[2026-09-04 13:29:49Z INFO ExecutionContext] Write event payload to D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work\_temp\_github_workflow\event.json
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Work': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Temp': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work\_temp'
+[2026-09-04 13:29:49Z INFO ExtensionManager] Getting extensions for interface: 'GitHub.Runner.Worker.IFileCommandExtension'
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.AddPathFileCommand, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.SetEnvFileCommand, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.CreateStepSummaryCommand, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.SaveStateFileCommand, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.SetOutputFileCommand, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.CreateArtifactsFileCommand, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.ArtifactsListFileCommand, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Getting extensions for interface: 'GitHub.Runner.Worker.IActionCommandExtension'
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.InternalPluginSetRepoPathCommandExtension, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.SetEnvCommandExtension, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.SetOutputCommandExtension, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.SaveStateCommandExtension, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.AddPathCommandExtension, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.AddMaskCommandExtension, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.AddMatcherCommandExtension, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.RemoveMatcherCommandExtension, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.WarningCommandExtension, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.ErrorCommandExtension, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.NoticeCommandExtension, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.DebugCommandExtension, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.GroupCommandExtension, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.EndGroupCommandExtension, Runner.Worker
+[2026-09-04 13:29:49Z INFO ExtensionManager] Creating instance: GitHub.Runner.Worker.EchoCommandExtension, Runner.Worker
+[2026-09-04 13:29:49Z INFO ActionCommandManager] Register action command extension for command internal-set-repo-path
+[2026-09-04 13:29:49Z INFO ActionCommandManager] Register action command extension for command set-env
+[2026-09-04 13:29:49Z INFO ActionCommandManager] Register action command extension for command set-output
+[2026-09-04 13:29:49Z INFO ActionCommandManager] Register action command extension for command save-state
+[2026-09-04 13:29:49Z INFO ActionCommandManager] Register action command extension for command add-path
+[2026-09-04 13:29:49Z INFO ActionCommandManager] Register action command extension for command add-mask
+[2026-09-04 13:29:49Z INFO ActionCommandManager] Register action command extension for command add-matcher
+[2026-09-04 13:29:49Z INFO ActionCommandManager] Register action command extension for command remove-matcher
+[2026-09-04 13:29:49Z INFO ActionCommandManager] Register action command extension for command warning
+[2026-09-04 13:29:49Z INFO ActionCommandManager] Register action command extension for command error
+[2026-09-04 13:29:49Z INFO ActionCommandManager] Register action command extension for command notice
+[2026-09-04 13:29:49Z INFO ActionCommandManager] Register action command extension for command debug
+[2026-09-04 13:29:49Z INFO ActionCommandManager] Register action command extension for command group
+[2026-09-04 13:29:49Z INFO ActionCommandManager] Register action command extension for command endgroup
+[2026-09-04 13:29:49Z INFO ActionCommandManager] Register action command extension for command echo
+[2026-09-04 13:29:49Z INFO ScriptHandler] Which2: 'pwsh'
+[2026-09-04 13:29:49Z INFO ScriptHandler] pwsh: command not found. Make sure 'pwsh' is installed and its location included in the 'Path' environment variable.
+[2026-09-04 13:29:49Z INFO ScriptHandler] Defaulting to powershell
+[2026-09-04 13:29:49Z INFO ScriptHandler] Which2: 'powershell'
+[2026-09-04 13:29:49Z INFO ScriptHandler] Location: 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.EXE'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Work': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work'
+[2026-09-04 13:29:49Z INFO HostContext] Well known directory 'Temp': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work\_temp'
+[2026-09-04 13:29:49Z INFO ScriptHandler] Which2: 'pwsh'
+[2026-09-04 13:29:49Z INFO ScriptHandler] pwsh: command not found. Make sure 'pwsh' is installed and its location included in the 'Path' environment variable.
+[2026-09-04 13:29:49Z INFO ScriptHandler] Defaulting to powershell
+[2026-09-04 13:29:49Z INFO ScriptHandler] Which2: 'powershell'
+[2026-09-04 13:29:49Z INFO ScriptHandler] Location: 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.EXE'
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper] Starting process:
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper]   File name: 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.EXE'
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper]   Arguments: '-command ". 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work\_temp\4002b94f-6b31-4f25-b15a-cdf9cb42ba9e.ps1'"'
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper]   Working directory: 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work\urge-git-project\urge-git-project'
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper]   Require exit code zero: 'False'
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper]   Encoding web name:  ; code page: ''
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper]   Force kill process on cancellation: 'False'
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper]   Redirected STDIN: 'False'
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper]   Persist current code page: 'True'
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper]   Keep redirected STDIN open: 'False'
+[2026-09-04 13:29:49Z INFO ProcessInvokerWrapper]   High priority process: 'False'
+[2026-09-04 13:29:50Z INFO ProcessInvokerWrapper] Process started with process id 20492, waiting for process exit.
+[2026-09-04 13:29:50Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-09-04 13:29:50Z INFO ProcessInvokerWrapper] STDOUT/STDERR stream read finished.
+[2026-09-04 13:29:50Z INFO ProcessInvokerWrapper] Finished process 20492 with exit code 1, and elapsed time 00:00:00.5756842.
+[2026-09-04 13:29:50Z INFO CreateStepSummaryCommand] Step Summary file (D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work\_temp\_runner_file_commands\step_summary_b3f21b98-592d-482d-897a-c5cda289b4b7) is empty; skipping attachment upload
+[2026-09-04 13:29:50Z INFO StepsRunner] Step result: Failed
+[2026-09-04 13:29:50Z INFO ExecutionContext] Publish step telemetry for current step {
+  "action": "powershell",
+  "type": "run",
+  "stage": "Main",
+  "stepId": "9ede801d-cc6d-49d0-b976-20e9aca2c6e6",
+  "stepContextName": "__run",
+  "result": "failed",
+  "errorMessages": [
+    "Process completed with exit code 1."
+  ],
+  "executionTimeInSeconds": 1,
+  "startTime": "2026-09-04T13:29:49.7796373Z",
+  "finishTime": "2026-09-04T13:29:50.5767503Z"
+}.
+[2026-09-04 13:29:50Z INFO StepsRunner] Update job result with current step result 'Failed'.
+[2026-09-04 13:29:50Z INFO StepsRunner] Current state: job state = 'Failed'
+[2026-09-04 13:29:50Z INFO StepsRunner] Processing step: DisplayName='Wait for Sync'
+[2026-09-04 13:29:50Z INFO StepsRunner] Evaluating: success()
+[2026-09-04 13:29:50Z INFO StepsRunner] Result: false
+[2026-09-04 13:29:50Z INFO StepsRunner] Skipping step due to condition evaluation.
+[2026-09-04 13:29:50Z INFO StepsRunner] No need for updating job result with current step result 'Skipped'.
+[2026-09-04 13:29:50Z INFO StepsRunner] Current state: job state = 'Failed'
+[2026-09-04 13:29:50Z INFO StepsRunner] Processing step: DisplayName='Launch AWX Deployment Template'
+[2026-09-04 13:29:50Z INFO StepsRunner] Evaluating: success()
+[2026-09-04 13:29:50Z INFO StepsRunner] Result: false
+[2026-09-04 13:29:50Z INFO StepsRunner] Skipping step due to condition evaluation.
+[2026-09-04 13:29:50Z INFO StepsRunner] No need for updating job result with current step result 'Skipped'.
+[2026-09-04 13:29:50Z INFO StepsRunner] Current state: job state = 'Failed'
+[2026-09-04 13:29:50Z INFO JobRunner] Finalize job.
+[2026-09-04 13:29:50Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:50Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:50Z INFO HostContext] Well known directory 'Diag': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_diag'
+[2026-09-04 13:29:50Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:29:50Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:29:50Z INFO HostContext] Well known directory 'Diag': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_diag'
+[2026-09-04 13:29:50Z INFO JobExtension] Initialize Env context
+[2026-09-04 13:29:50Z INFO JobExtension] Initialize steps context
+[2026-09-04 13:29:50Z INFO JobExtension] Total accessible running process: 272.
+[2026-09-04 13:29:50Z INFO JobExtension] Wait for all connectivity checks to finish.
+[2026-09-04 13:29:50Z INFO JobServerQueue] Got a step log file to send to results service.
+[2026-09-04 13:29:50Z INFO JobServerQueue] Starting upload of step log file to results service ResultsLog, D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_diag\blocks\36481410-74a0-43cc-bb1a-909583dd2684_b8c4d242-0d94-4096-8a46-e49961324be9.1
+[2026-09-04 13:29:50Z INFO JobServerQueue] Try to upload 2 log files or attachments, success rate: 2/2.
+[2026-09-04 13:29:52Z INFO ResultServer] Successfully started websocket client.
+[2026-09-04 13:29:52Z INFO JobServerQueue] Try to append 1 batches web console lines for record 'b8c4d242-0d94-4096-8a46-e49961324be9', success rate: 1/1.
+[2026-09-04 13:29:52Z INFO JobServerQueue] Try to append 1 batches web console lines for record '9ede801d-cc6d-49d0-b976-20e9aca2c6e6', success rate: 1/1.
+[2026-09-04 13:29:52Z INFO JobServerQueue] Try to append 1 batches web console lines for record '6cfad0fa-1f9d-4192-8b12-6470d33e6e2f', success rate: 1/1.
+[2026-09-04 13:29:52Z INFO JobExtension] Connectivity check result: {
+  "endpointUrl": "https://broker.actions.githubusercontent.com/health",
+  "endpointIPs": null,
+  "startTime": "2026-09-04T13:29:49.7561656Z",
+  "statusCode": "http_OK",
+  "requestId": "A593:2B49FC:971B92:994038:6A9AC7E5",
+  "httpRequestDurationInMs": 909,
+  "dnsResolutionDurationInMs": 0,
+  "dnsError": null
+}
+[2026-09-04 13:29:52Z INFO JobExtension] Connectivity check result: {
+  "endpointUrl": "https://token.actions.githubusercontent.com/ready",
+  "endpointIPs": null,
+  "startTime": "2026-09-04T13:29:49.7658041Z",
+  "statusCode": "http_NoContent",
+  "requestId": "3FE7:1C974A:70BE34:7D1BDD:6A9AC7E6",
+  "httpRequestDurationInMs": 3147,
+  "dnsResolutionDurationInMs": 0,
+  "dnsError": null
+}
+[2026-09-04 13:29:52Z INFO JobExtension] Connectivity check result: {
+  "endpointUrl": "https://run.actions.githubusercontent.com/health",
+  "endpointIPs": null,
+  "startTime": "2026-09-04T13:29:49.7660952Z",
+  "statusCode": "http_OK",
+  "requestId": "4F2B:141CDF:895171:8B60C2:6A9AC7E6",
+  "httpRequestDurationInMs": 1373,
+  "dnsResolutionDurationInMs": 0,
+  "dnsError": null
+}
+[2026-09-04 13:29:52Z INFO ExecutionContext] Publish step telemetry for current step {
+  "action": "complete_job",
+  "type": "runner",
+  "stage": "Post",
+  "stepId": "6cfad0fa-1f9d-4192-8b12-6470d33e6e2f",
+  "result": "succeeded",
+  "errorMessages": [],
+  "executionTimeInSeconds": 3,
+  "startTime": "2026-09-04T13:29:50.5856222Z",
+  "finishTime": "2026-09-04T13:29:52.9165385Z"
+}.
+[2026-09-04 13:29:52Z INFO JobRunner] Job result after all job steps finish: Failed
+[2026-09-04 13:29:52Z INFO JobRunner] Completing the job execution context.
+[2026-09-04 13:29:52Z INFO JobRunner] Shutting down the job server queue.
+[2026-09-04 13:29:52Z INFO JobServerQueue] Fire signal to shutdown all queues.
+[2026-09-04 13:29:53Z INFO JobServerQueue] Job timeline record has been updated for the first time.
+[2026-09-04 13:29:55Z INFO JobServerQueue] Got a step log file to send to results service.
+[2026-09-04 13:29:55Z INFO JobServerQueue] Starting upload of step log file to results service ResultsLog, D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_diag\blocks\36481410-74a0-43cc-bb1a-909583dd2684_9ede801d-cc6d-49d0-b976-20e9aca2c6e6.1
+[2026-09-04 13:29:56Z INFO JobServerQueue] Tried to upload 2 file(s) to results, success rate: 2/2.
+[2026-09-04 13:29:57Z INFO JobServerQueue] All queue process task stopped.
+[2026-09-04 13:29:57Z INFO JobServerQueue] Web console line queue drained.
+[2026-09-04 13:29:57Z INFO JobServerQueue] Uploading 2 files in one shot.
+[2026-09-04 13:29:57Z INFO JobServerQueue] Try to upload 2 log files or attachments, success rate: 2/2.
+[2026-09-04 13:29:57Z INFO JobServerQueue] File upload queue drained.
+[2026-09-04 13:29:57Z INFO JobServerQueue] Starting results-based upload queue...
+[2026-09-04 13:29:57Z INFO JobServerQueue] Uploading 2 file(s) in one shot through results service.
+[2026-09-04 13:29:57Z INFO JobServerQueue] Got a step log file to send to results service.
+[2026-09-04 13:29:57Z INFO JobServerQueue] Starting upload of step log file to results service ResultsLog, D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_diag\blocks\36481410-74a0-43cc-bb1a-909583dd2684_6cfad0fa-1f9d-4192-8b12-6470d33e6e2f.1
+[2026-09-04 13:30:02Z INFO JobServerQueue] Got a job log file to send to results service.
+[2026-09-04 13:30:02Z INFO JobServerQueue] Starting upload of job log file to results service ResultsLog, D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_diag\blocks\36481410-74a0-43cc-bb1a-909583dd2684_b0506ae2-e459-5c8e-bf05-76850cd3e177.1
+[2026-09-04 13:30:04Z INFO JobServerQueue] Tried to upload 2 file(s) to results, success rate: 2/2.
+[2026-09-04 13:30:04Z INFO JobServerQueue] Results upload queue drained.
+[2026-09-04 13:30:04Z INFO JobServerQueue] Timeline update queue drained.
+[2026-09-04 13:30:04Z INFO JobServerQueue] Disposing job server ...
+[2026-09-04 13:30:04Z INFO JobServerQueue] Disposing results server ...
+[2026-09-04 13:30:04Z INFO JobServerQueue] All queue process tasks have been stopped, and all queues are drained.
+[2026-09-04 13:30:04Z INFO TempDirectoryManager] Cleaning runner temp folder: D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_work\_temp
+[2026-09-04 13:30:04Z INFO HostContext] Well known directory 'Bin': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\bin'
+[2026-09-04 13:30:04Z INFO HostContext] Well known directory 'Root': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner'
+[2026-09-04 13:30:04Z INFO HostContext] Well known directory 'Diag': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_diag'
+[2026-09-04 13:30:04Z INFO HostContext] Well known config file 'Telemetry': 'D:\Urge_PC\Documents\My_Doc\Docker-and-Kubernet-Learning\CI-CD-project\actions-runner\_diag\.telemetry'
+[2026-09-04 13:30:04Z INFO JobRunner] Raising job completed against run service
+[2026-09-04 13:30:05Z INFO Worker] Job completed.

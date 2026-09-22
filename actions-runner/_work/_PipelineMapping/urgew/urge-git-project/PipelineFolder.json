@@ -1,0 +1,12 @@
+﻿{
+  "repositoryName": "urgew/urge-git-project",
+  "pipelineDirectory": "urge-git-project",
+  "workspaceDirectory": "urge-git-project\\urge-git-project",
+  "repositories": {
+    "urgew/urge-git-project": {
+      "repositoryPath": "urge-git-project\\urge-git-project",
+      "lastRunOn": "09/04/2026 16:29:49 +03:00"
+    }
+  },
+  "lastRunOn": "09/04/2026 16:30:11 +03:00"
+}

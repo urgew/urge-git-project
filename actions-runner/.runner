@@ -1,0 +1,11 @@
+﻿{
+  "agentId": 22,
+  "agentName": "INF-CLP-05",
+  "poolId": 1,
+  "poolName": "Default",
+  "serverUrl": "https://pipelinesghubeus14.actions.githubusercontent.com/MThrQJkAvuDgtDruZ5XzhBZYnowl3dz8XrkQDXrANdgnoPw4u4/",
+  "gitHubUrl": "https://github.com/urgew/urge-git-project",
+  "workFolder": "_work",
+  "useV2Flow": true,
+  "serverUrlV2": "https://broker.actions.githubusercontent.com/"
+}

@@ -15,10 +15,10 @@ token generated is : MtYylQagomH6PanSWqRKPTVbM2Bx6u
 
 create secret on github called- my_awx_secret
 -----------------------------------------------
-4. AWX_HOST : https://awx-test.cbo.com     -------->my awx server
+4. AWX_HOST : https://awx-test.cbo.com         -------->my awx server
    AWX_TOKEN : MtYylQagomH6PanSWqRKPTVbM2Bx6u  ------>token generated above on awx
    AWX_PROJECT_ID : 18                         -------> my git project id  on awx projects
-   AWX_TEMPLATE_ID : 20                           -------> i Created one template for this on awx as a sample
+   AWX_TEMPLATE_ID : 20                        -------> i Created one template for this on awx as a sample
 
 
 5. Create the cd.yml file
