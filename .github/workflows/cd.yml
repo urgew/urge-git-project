@@ -18,10 +18,11 @@ jobs:
           -k \
           "${{ secrets.AWX_HOST }}/api/v2/projects/${{ secrets.AWX_PROJECT_ID }}/update/"
 
+    # Step 2: Wait for the project sync to finish
     - name: Wait for Sync
       run: sleep 10
 
-    # Step 2: Directly trigger Template ID 20 using the secure AWX API
+    # Step 3: Directly trigger Template ID 20 using the secure AWX API
     - name: Launch AWX Deployment Job Template
       run: |
         curl -X POST \
