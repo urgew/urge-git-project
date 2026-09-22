@@ -2,14 +2,14 @@ name: Continuous Deployment via AWX
 
 on:
   push:
-    branches: [ "main" ] # Triggers only when code lands on main
+    branches: [ "main" ]
 
 jobs:
   deploy-via-awx:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
-    # Step 1: Tell AWX to pull the latest playbook code from this GitHub repository
+    # Step 1: Tell AWX to pull down your new repository code
     - name: Sync AWX Project Source Code
       run: |
         curl -X POST \
@@ -18,16 +18,15 @@ jobs:
           -k \
           "${{ secrets.AWX_HOST }}/api/v2/projects/${{ secrets.AWX_PROJECT_ID }}/update/"
 
-    # Step 2: Wait 10 seconds to ensure the project sync completes smoothly
+    # Step 2: Wait for the project sync to finish
     - name: Wait for Sync
       run: sleep 10
 
-    # Step 3: Trigger the actual Deployment Job Template in AWX
-    - name: Launch AWX Deployment Template
+    # Step 3: Trigger Template ID 20 directly using a clean API string
+    - name: Launch AWX Deployment Job Template
       run: |
         curl -X POST \
           -H "Authorization: Bearer ${{ secrets.AWX_TOKEN }}" \
           -H "Content-Type: application/json" \
-          -d '{"extra_vars": {"git_commit_sha": "${{ github.sha }}"}}' \
           -k \
-          "${{ secrets.AWX_HOST }}/api/v2/job_templates/${{ secrets.AWX_TEMPLATE_ID }}/launch/"
+          "${{ secrets.AWX_HOST }}/api/v2/job_templates/20/launch/"
