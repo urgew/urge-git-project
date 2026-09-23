@@ -11,7 +11,37 @@ jobs:
 
     steps:
 
-      # Step 1: Sync AWX Project from GitHub
+      # Check GitHub Secrets
+      - name: Check AWX configuration
+        run: |
+          echo "Checking AWX configuration..."
+
+          if [ -z "${{ secrets.AWX_HOST }}" ]; then
+            echo "ERROR: AWX_HOST is empty or not configured."
+            exit 1
+          fi
+
+          if [ -z "${{ secrets.AWX_TOKEN }}" ]; then
+            echo "ERROR: AWX_TOKEN is empty or not configured."
+            exit 1
+          fi
+
+          if [ -z "${{ secrets.AWX_PROJECT_ID }}" ]; then
+            echo "ERROR: AWX_PROJECT_ID is empty or not configured."
+            exit 1
+          fi
+
+          if [ -z "${{ secrets.AWX_JOB_TEMPLATE_ID }}" ]; then
+            echo "ERROR: AWX_JOB_TEMPLATE_ID is empty or not configured."
+            exit 1
+          fi
+
+          echo "AWX_HOST is configured."
+          echo "AWX_PROJECT_ID is configured."
+          echo "AWX_JOB_TEMPLATE_ID is configured."
+          echo "AWX_TOKEN is configured."
+
+      # Sync AWX Project
       - name: Sync AWX Project Source Code
         run: |
           echo "Starting AWX project synchronization..."
@@ -23,13 +53,13 @@ jobs:
 
           echo "AWX project sync requested successfully."
 
-      # Step 2: Wait for AWX project synchronization
-      - name: Wait for AWX Project Sync
+      # Wait
+      - name: Wait for AWX project synchronization
         run: |
           echo "Waiting for AWX project synchronization..."
           sleep 15
 
-      # Step 3: Launch AWX Job Template
+      # Launch AWX Job Template
       - name: Launch AWX Deployment Job Template
         run: |
           echo "Launching AWX deployment job template..."
