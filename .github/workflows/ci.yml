@@ -1,26 +1,29 @@
-
 name: My First GitHub Action
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   test-job:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Get project code
-      uses: actions/checkout@v4
+      - name: Get project code
+        uses: actions/checkout@v4
 
-    - name: Run a quick test
-      run: echo "Hello! Your GitHub Action is working perfectly!"
+      - name: Run a quick test
+        run: echo "Hello! Your GitHub Action is working perfectly!"
 
-        # Add this step inside your existing ci.yml jobs -> steps
-    - name: Run Ansible Lint
-      uses: ansible/ansible-lint-action@v6
-      with:
-        targets: |
-          *.yml
+      - name: Install Ansible Lint
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install ansible-lint
+
+      - name: Run Ansible Lint
+        run: |
+          ansible-lint .
+
+
