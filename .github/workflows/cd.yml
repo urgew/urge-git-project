@@ -11,62 +11,156 @@ jobs:
 
     steps:
 
-      # Check GitHub Secrets
+      # ============================================================
+      # Step 1: Check GitHub Secrets
+      # ============================================================
       - name: Check AWX configuration
+        shell: powershell
         run: |
-          echo "Checking AWX configuration..."
+          Write-Host "Checking AWX configuration..."
 
-          if [ -z "${{ secrets.AWX_HOST }}" ]; then
-            echo "ERROR: AWX_HOST is empty or not configured."
-            exit 1
-          fi
+          if ([string]::IsNullOrWhiteSpace("${{ secrets.AWX_HOST }}")) {
+              Write-Host "ERROR: AWX_HOST is empty or not configured."
+              exit 1
+          }
 
-          if [ -z "${{ secrets.AWX_TOKEN }}" ]; then
-            echo "ERROR: AWX_TOKEN is empty or not configured."
-            exit 1
-          fi
+          if ([string]::IsNullOrWhiteSpace("${{ secrets.AWX_TOKEN }}")) {
+              Write-Host "ERROR: AWX_TOKEN is empty or not configured."
+              exit 1
+          }
 
-          if [ -z "${{ secrets.AWX_PROJECT_ID }}" ]; then
-            echo "ERROR: AWX_PROJECT_ID is empty or not configured."
-            exit 1
-          fi
+          if ([string]::IsNullOrWhiteSpace("${{ secrets.AWX_PROJECT_ID }}")) {
+              Write-Host "ERROR: AWX_PROJECT_ID is empty or not configured."
+              exit 1
+          }
 
-          if [ -z "${{ secrets.AWX_JOB_TEMPLATE_ID }}" ]; then
-            echo "ERROR: AWX_JOB_TEMPLATE_ID is empty or not configured."
-            exit 1
-          fi
+          if ([string]::IsNullOrWhiteSpace("${{ secrets.AWX_JOB_TEMPLATE_ID }}")) {
+              Write-Host "ERROR: AWX_JOB_TEMPLATE_ID is empty or not configured."
+              exit 1
+          }
 
-          echo "AWX_HOST is configured."
-          echo "AWX_PROJECT_ID is configured."
-          echo "AWX_JOB_TEMPLATE_ID is configured."
-          echo "AWX_TOKEN is configured."
+          Write-Host "AWX_HOST is configured."
+          Write-Host "AWX_PROJECT_ID is configured."
+          Write-Host "AWX_JOB_TEMPLATE_ID is configured."
+          Write-Host "AWX_TOKEN is configured."
 
-      # Sync AWX Project
+      # ============================================================
+      # Step 2: Test AWX Network Connectivity
+      # ============================================================
+      - name: Test AWX connectivity
+        shell: powershell
+        run: |
+          Write-Host "Testing DNS resolution for AWX..."
+
+          Resolve-DnsName awx-test.cbo.com
+
+          Write-Host ""
+          Write-Host "Testing HTTPS connectivity to AWX..."
+
+          $connection = Test-NetConnection awx-test.cbo.com -Port 443
+
+          if (-not $connection.TcpTestSucceeded) {
+              Write-Host "ERROR: Cannot connect to AWX on TCP port 443."
+              exit 1
+          }
+
+          Write-Host "AWX HTTPS connectivity successful."
+
+          Write-Host ""
+          Write-Host "Testing AWX API..."
+
+          $response = curl.exe -k -s `
+            --connect-timeout 10 `
+            "${{ secrets.AWX_HOST }}/api/v2/ping/"
+
+          Write-Host "AWX API response:"
+          Write-Host $response
+
+          if ([string]::IsNullOrWhiteSpace($response)) {
+              Write-Host "ERROR: No response received from AWX API."
+              exit 1
+          }
+
+          Write-Host "AWX API connectivity successful."
+
+      # ============================================================
+      # Step 3: Sync AWX Project
+      # ============================================================
       - name: Sync AWX Project Source Code
+        shell: powershell
         run: |
-          echo "Starting AWX project synchronization..."
+          Write-Host "Starting AWX project synchronization..."
 
-          curl -k -f -X POST \
-            -H "Authorization: Bearer ${{ secrets.AWX_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            "${{ secrets.AWX_HOST }}/api/v2/projects/${{ secrets.AWX_PROJECT_ID }}/update/"
+          $headers = @{
+              Authorization = "Bearer ${{ secrets.AWX_TOKEN }}"
+              "Content-Type" = "application/json"
+          }
 
-          echo "AWX project sync requested successfully."
+          $url = "${{ secrets.AWX_HOST }}/api/v2/projects/${{ secrets.AWX_PROJECT_ID }}/update/"
 
-      # Wait
+          Write-Host "AWX Project ID: ${{ secrets.AWX_PROJECT_ID }}"
+
+          try {
+              $response = Invoke-RestMethod `
+                -Uri $url `
+                -Method Post `
+                -Headers $headers `
+                -SkipCertificateCheck `
+                -ErrorAction Stop
+
+              Write-Host "AWX project synchronization requested successfully."
+              Write-Host "AWX Update Job ID: $($response.id)"
+          }
+          catch {
+              Write-Host "ERROR: Failed to synchronize AWX project."
+              Write-Host $_.Exception.Message
+              exit 1
+          }
+
+      # ============================================================
+      # Step 4: Wait for AWX Project Synchronization
+      # ============================================================
       - name: Wait for AWX project synchronization
+        shell: powershell
         run: |
-          echo "Waiting for AWX project synchronization..."
-          sleep 15
+          Write-Host "Waiting for AWX project synchronization..."
+          Write-Host "Waiting 15 seconds..."
+          
+          Start-Sleep -Seconds 15
 
-      # Launch AWX Job Template
+          Write-Host "AWX project synchronization wait completed."
+
+      # ============================================================
+      # Step 5: Launch AWX Job Template
+      # ============================================================
       - name: Launch AWX Deployment Job Template
+        shell: powershell
         run: |
-          echo "Launching AWX deployment job template..."
+          Write-Host "Launching AWX deployment job template..."
 
-          curl -k -f -X POST \
-            -H "Authorization: Bearer ${{ secrets.AWX_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            "${{ secrets.AWX_HOST }}/api/v2/job_templates/${{ secrets.AWX_JOB_TEMPLATE_ID }}/launch/"
+          $headers = @{
+              Authorization = "Bearer ${{ secrets.AWX_TOKEN }}"
+              "Content-Type" = "application/json"
+          }
 
-          echo "AWX deployment job launched successfully."
+          $url = "${{ secrets.AWX_HOST }}/api/v2/job_templates/${{ secrets.AWX_JOB_TEMPLATE_ID }}/launch/"
+
+          Write-Host "AWX Job Template ID: ${{ secrets.AWX_JOB_TEMPLATE_ID }}"
+
+          try {
+              $response = Invoke-RestMethod `
+                -Uri $url `
+                -Method Post `
+                -Headers $headers `
+                -SkipCertificateCheck `
+                -ErrorAction Stop
+
+              Write-Host "AWX deployment job launched successfully."
+              Write-Host "AWX Deployment Job ID: $($response.id)"
+          }
+          catch {
+              Write-Host "ERROR: Failed to launch AWX Job Template."
+              Write-Host $_.Exception.Message
+              exit 1
+          }
+
