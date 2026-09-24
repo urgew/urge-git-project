@@ -104,54 +104,44 @@ jobs:
         run: |
           Write-Host "Starting AWX project synchronization..."
 
-          $url = "${{ secrets.AWX_HOST }}/api/v2/projects/${{ secrets.AWX_PROJECT_ID }}/update/"
+          $awxHost = "${{ secrets.AWX_HOST }}"
+          $projectId = "${{ secrets.AWX_PROJECT_ID }}"
+          $token = "${{ secrets.AWX_TOKEN }}"
 
-          Write-Host "AWX Project ID: ${{ secrets.AWX_PROJECT_ID }}"
+          $url = "$awxHost/api/v2/projects/$projectId/update/"
 
-          $response = curl.exe -k -s `
-            -w "`nHTTP_STATUS:%{http_code}" `
-            -X POST `
-            -H "Authorization: Bearer ${{ secrets.AWX_TOKEN }}" `
-            -H "Content-Type: application/json" `
-            "$url"
+          Write-Host "AWX Project ID: $projectId"
 
-          Write-Host ""
-          Write-Host "AWX synchronization response:"
-          Write-Host $response
+          try {
+              $headers = @{
+                  "Authorization" = "Bearer $token"
+                  "Content-Type"  = "application/json"
+              }
 
-          if ($response -match "HTTP_STATUS:2\d\d") {
+              $response = Invoke-RestMethod `
+                  -Uri $url `
+                  -Method Post `
+                  -Headers $headers
 
               Write-Host "AWX project synchronization requested successfully."
+              Write-Host "Project Update ID: $($response.id)"
+              Write-Host "Project Status: $($response.status)"
 
-              # Extract the project update ID
-              $jsonPart = $response -replace "`nHTTP_STATUS:.*", ""
-
-              try {
-                  $json = $jsonPart | ConvertFrom-Json
-                  $projectUpdateId = $json.id
-
-                  if ($null -eq $projectUpdateId) {
-                      Write-Host "ERROR: Could not determine project update ID."
-                      exit 1
-                  }
-
-                  Write-Host "Project Update ID: $projectUpdateId"
-
-                  # Save ID for next step
-                  "PROJECT_UPDATE_ID=$projectUpdateId" | Out-File `
-                    -FilePath $env:GITHUB_ENV `
-                    -Append
-
-              }
-              catch {
-                  Write-Host "ERROR: Could not parse AWX response."
+              if ($null -eq $response.id) {
+                  Write-Host "ERROR: AWX did not return a Project Update ID."
                   exit 1
               }
+
+              "PROJECT_UPDATE_ID=$($response.id)" | Out-File `
+                  -FilePath $env:GITHUB_ENV `
+                  -Append
           }
-          else {
+          catch {
               Write-Host "ERROR: AWX project synchronization failed."
+              Write-Host $_.Exception.Message
               exit 1
           }
+
 
 
       # ============================================================
