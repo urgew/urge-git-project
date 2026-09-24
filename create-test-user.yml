@@ -6,12 +6,9 @@
 
   vars:
     test_username: testuser-cd
-    
-
   tasks:
-
     - name: Create test user
-      ansible.builtin.user:
+        ansible.builtin.user:
         name: "{{ test_username }}"
         shell: /bin/bash
         create_home: true
