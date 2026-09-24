@@ -108,5 +108,6 @@ jobs:
       # ============================================================
       - name: Run Ansible Lint
         run: |
-          ansible-lint sync-nutanix-vm-to-awx-gr-than-500-new.yml \
-            --format pep8
+          find . -type f \( -name "*.yml" -o -name "*.yaml" \) \
+            ! -path "./.git/*" \
+            -print0 | xargs -0 ansible-lint
