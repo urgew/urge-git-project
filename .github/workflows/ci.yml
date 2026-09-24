@@ -2,35 +2,111 @@ name: Ansible CI
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
+
   pull_request:
-    branches: ["main"]
+    branches:
+      - main
 
 jobs:
   test-job:
+    name: Ansible Validation
     runs-on: ubuntu-latest
 
     steps:
+
+      # ============================================================
+      # 1. Get project source code
+      # ============================================================
       - name: Get project code
         uses: actions/checkout@v4
 
+      # ============================================================
+      # 2. Basic GitHub Actions test
+      # ============================================================
       - name: Run a quick test
-        run: echo "GitHub Action is working."
+        run: |
+          echo "GitHub Actions CI is working."
+          echo "Repository: ${{ github.repository }}"
+          echo "Branch/Ref: ${{ github.ref }}"
 
+      # ============================================================
+      # 3. Install Ansible
+      # ============================================================
       - name: Install Ansible
         run: |
           python3 -m pip install --upgrade pip
           pip install ansible ansible-lint
 
+      # ============================================================
+      # 4. Install required Ansible collections
+      # ============================================================
       - name: Install required Ansible collections
         run: |
           ansible-galaxy collection install awx.awx
           ansible-galaxy collection install community.vmware
 
+      # ============================================================
+      # 5. Verify Ansible installation
+      # ============================================================
+      - name: Verify Ansible installation
+        run: |
+          ansible --version
+          ansible-lint --version
+
+      # ============================================================
+      # 6. Verify Ansible collections
+      # ============================================================
       - name: Verify Ansible collections
         run: |
           ansible-galaxy collection list
 
+      # ============================================================
+      # 7. Find Ansible playbooks
+      # ============================================================
+      - name: Find Ansible playbooks
+        shell: bash
+        run: |
+          echo "Ansible playbooks found:"
+          find . -type f \( -name "*.yml" -o -name "*.yaml" \) \
+            -not -path "./.git/*" \
+            -print
+
+      # ============================================================
+      # 8. Run Ansible syntax check
+      # ============================================================
+      - name: Run Ansible syntax check
+        shell: bash
+        run: |
+          set -e
+
+          found=0
+
+          while IFS= read -r playbook; do
+            found=1
+            echo "============================================================"
+            echo "Syntax checking: $playbook"
+            echo "============================================================"
+
+            ansible-playbook --syntax-check "$playbook"
+          done < <(
+            find . -type f \( -name "*.yml" -o -name "*.yaml" \) \
+              -not -path "./.git/*" \
+              -not -path "./.github/*"
+          )
+
+          if [ "$found" -eq 0 ]; then
+            echo "ERROR: No Ansible playbooks were found."
+            exit 1
+          fi
+
+          echo "All Ansible playbooks passed syntax validation."
+
+      # ============================================================
+      # 9. Run Ansible Lint
+      # ============================================================
       - name: Run Ansible Lint
         run: |
           ansible-lint .
+```

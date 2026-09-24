@@ -1,18 +1,27 @@
 name: Continuous Deployment via AWX
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Ansible CI"]
+    types:
+      - completed
     branches:
       - main
 
 jobs:
   deploy-via-awx:
+
+    # ============================================================
+    # Run CD only when CI completed successfully
+    # ============================================================
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
     runs-on: self-hosted
 
     steps:
 
       # ============================================================
-      # Step 1: Check GitHub Secrets
+      # Step 1: Check AWX configuration
       # ============================================================
       - name: Check AWX configuration
         shell: powershell
@@ -39,25 +48,28 @@ jobs:
               exit 1
           }
 
-          Write-Host "AWX_HOST is configured."
-          Write-Host "AWX_PROJECT_ID is configured."
-          Write-Host "AWX_JOB_TEMPLATE_ID is configured."
-          Write-Host "AWX_TOKEN is configured."
+          Write-Host "AWX configuration is available."
+
 
       # ============================================================
-      # Step 2: Test AWX Connectivity
+      # Step 2: Test AWX connectivity
       # ============================================================
       - name: Test AWX connectivity
         shell: powershell
         run: |
           Write-Host "Testing DNS resolution for AWX..."
 
-          Resolve-DnsName awx-test.cbo.com
+          $awxHost = "${{ secrets.AWX_HOST }}"
+
+          $uri = [System.Uri]$awxHost
+          $hostname = $uri.Host
+
+          Resolve-DnsName $hostname
 
           Write-Host ""
           Write-Host "Testing HTTPS connectivity to AWX..."
 
-          $connection = Test-NetConnection awx-test.cbo.com -Port 443
+          $connection = Test-NetConnection $hostname -Port 443
 
           if (-not $connection.TcpTestSucceeded) {
               Write-Host "ERROR: Cannot connect to AWX on TCP port 443."
@@ -71,7 +83,7 @@ jobs:
 
           $response = curl.exe -k -s `
             --connect-timeout 10 `
-            "${{ secrets.AWX_HOST }}/api/v2/ping/"
+            "$awxHost/api/v2/ping/"
 
           Write-Host "AWX API response:"
           Write-Host $response
@@ -83,10 +95,11 @@ jobs:
 
           Write-Host "AWX API connectivity successful."
 
+
       # ============================================================
-      # Step 3: Sync AWX Project
+      # Step 3: Synchronize AWX Project
       # ============================================================
-      - name: Sync AWX Project Source Code
+      - name: Sync AWX Project
         shell: powershell
         run: |
           Write-Host "Starting AWX project synchronization..."
@@ -95,62 +108,228 @@ jobs:
 
           Write-Host "AWX Project ID: ${{ secrets.AWX_PROJECT_ID }}"
 
-          $response = curl.exe -k -s -w "`nHTTP_STATUS:%{http_code}" `
+          $response = curl.exe -k -s `
+            -w "`nHTTP_STATUS:%{http_code}" `
             -X POST `
             -H "Authorization: Bearer ${{ secrets.AWX_TOKEN }}" `
             -H "Content-Type: application/json" `
             "$url"
 
+          Write-Host ""
           Write-Host "AWX synchronization response:"
           Write-Host $response
 
           if ($response -match "HTTP_STATUS:2\d\d") {
+
               Write-Host "AWX project synchronization requested successfully."
+
+              # Extract the project update ID
+              $jsonPart = $response -replace "`nHTTP_STATUS:.*", ""
+
+              try {
+                  $json = $jsonPart | ConvertFrom-Json
+                  $projectUpdateId = $json.id
+
+                  if ($null -eq $projectUpdateId) {
+                      Write-Host "ERROR: Could not determine project update ID."
+                      exit 1
+                  }
+
+                  Write-Host "Project Update ID: $projectUpdateId"
+
+                  # Save ID for next step
+                  "PROJECT_UPDATE_ID=$projectUpdateId" | Out-File `
+                    -FilePath $env:GITHUB_ENV `
+                    -Append
+
+              }
+              catch {
+                  Write-Host "ERROR: Could not parse AWX response."
+                  exit 1
+              }
           }
           else {
               Write-Host "ERROR: AWX project synchronization failed."
               exit 1
           }
 
+
       # ============================================================
-      # Step 4: Wait for AWX Project Synchronization
+      # Step 4: Wait for Project Synchronization
       # ============================================================
-      - name: Wait for AWX project synchronization
+      - name: Wait for AWX Project Synchronization
         shell: powershell
         run: |
           Write-Host "Waiting for AWX project synchronization..."
-          Write-Host "Waiting 15 seconds..."
+          Write-Host "Project Update ID: $env:PROJECT_UPDATE_ID"
 
-          Start-Sleep -Seconds 15
+          $url = "${{ secrets.AWX_HOST }}/api/v2/project_updates/$env:PROJECT_UPDATE_ID/"
 
-          Write-Host "AWX project synchronization wait completed."
+          $maxAttempts = 30
+          $attempt = 0
+
+          while ($attempt -lt $maxAttempts) {
+
+              $attempt++
+
+              Write-Host ""
+              Write-Host "Checking project synchronization status - Attempt $attempt/$maxAttempts"
+
+              $response = curl.exe -k -s `
+                -H "Authorization: Bearer ${{ secrets.AWX_TOKEN }}" `
+                "$url"
+
+              try {
+                  $json = $response | ConvertFrom-Json
+                  $status = $json.status
+
+                  Write-Host "Project synchronization status: $status"
+
+                  if ($status -eq "successful") {
+                      Write-Host "AWX project synchronization completed successfully."
+                      exit 0
+                  }
+
+                  if ($status -in @(
+                      "failed",
+                      "error",
+                      "canceled",
+                      "never updated"
+                  )) {
+                      Write-Host "ERROR: AWX project synchronization failed."
+                      Write-Host "Status: $status"
+                      exit 1
+                  }
+              }
+              catch {
+                  Write-Host "ERROR: Unable to parse AWX project update response."
+                  exit 1
+              }
+
+              Start-Sleep -Seconds 10
+          }
+
+          Write-Host "ERROR: AWX project synchronization timed out."
+          exit 1
+
 
       # ============================================================
-      # Step 5: Launch AWX Job Template
+      # Step 5: Launch AWX Deployment Job
       # ============================================================
-      - name: Launch AWX Deployment Job Template
+      - name: Launch AWX Deployment Job
         shell: powershell
         run: |
-          Write-Host "Launching AWX deployment job template..."
+          Write-Host "Launching AWX deployment job..."
 
           $url = "${{ secrets.AWX_HOST }}/api/v2/job_templates/${{ secrets.AWX_JOB_TEMPLATE_ID }}/launch/"
 
           Write-Host "AWX Job Template ID: ${{ secrets.AWX_JOB_TEMPLATE_ID }}"
 
-          $response = curl.exe -k -s -w "`nHTTP_STATUS:%{http_code}" `
+          $response = curl.exe -k -s `
+            -w "`nHTTP_STATUS:%{http_code}" `
             -X POST `
             -H "Authorization: Bearer ${{ secrets.AWX_TOKEN }}" `
             -H "Content-Type: application/json" `
             "$url"
 
+          Write-Host ""
           Write-Host "AWX launch response:"
           Write-Host $response
 
           if ($response -match "HTTP_STATUS:2\d\d") {
-              Write-Host "AWX deployment job launched successfully."
+
+              $jsonPart = $response -replace "`nHTTP_STATUS:.*", ""
+
+              try {
+                  $json = $jsonPart | ConvertFrom-Json
+                  $jobId = $json.job
+
+                  if ($null -eq $jobId) {
+                      Write-Host "ERROR: Could not determine AWX Job ID."
+                      exit 1
+                  }
+
+                  Write-Host "AWX Job ID: $jobId"
+
+                  # Save Job ID for next step
+                  "AWX_JOB_ID=$jobId" | Out-File `
+                    -FilePath $env:GITHUB_ENV `
+                    -Append
+
+                  Write-Host "AWX deployment job launched successfully."
+
+              }
+              catch {
+                  Write-Host "ERROR: Could not parse AWX launch response."
+                  exit 1
+              }
+
           }
           else {
               Write-Host "ERROR: Failed to launch AWX Job Template."
               exit 1
           }
 
+
+      # ============================================================
+      # Step 6: Monitor AWX Deployment Job
+      # ============================================================
+      - name: Monitor AWX Deployment Job
+        shell: powershell
+        run: |
+          Write-Host "Monitoring AWX deployment job..."
+          Write-Host "AWX Job ID: $env:AWX_JOB_ID"
+
+          $url = "${{ secrets.AWX_HOST }}/api/v2/jobs/$env:AWX_JOB_ID/"
+
+          $maxAttempts = 60
+          $attempt = 0
+
+          while ($attempt -lt $maxAttempts) {
+
+              $attempt++
+
+              Write-Host ""
+              Write-Host "Checking AWX job status - Attempt $attempt/$maxAttempts"
+
+              $response = curl.exe -k -s `
+                -H "Authorization: Bearer ${{ secrets.AWX_TOKEN }}" `
+                "$url"
+
+              try {
+                  $json = $response | ConvertFrom-Json
+                  $status = $json.status
+
+                  Write-Host "AWX Job Status: $status"
+
+                  if ($status -eq "successful") {
+                      Write-Host ""
+                      Write-Host "============================================"
+                      Write-Host "AWX DEPLOYMENT COMPLETED SUCCESSFULLY"
+                      Write-Host "============================================"
+                      exit 0
+                  }
+
+                  if ($status -in @(
+                      "failed",
+                      "error",
+                      "canceled"
+                  )) {
+                      Write-Host ""
+                      Write-Host "============================================"
+                      Write-Host "AWX DEPLOYMENT FAILED"
+                      Write-Host "Status: $status"
+                      Write-Host "============================================"
+                      exit 1
+                  }
+              }
+              catch {
+                  Write-Host "ERROR: Unable to parse AWX job response."
+                  exit 1
+              }
+
+              Start-Sleep -Seconds 10
+          }
+
+          Write-Host "ERROR: AWX deployment job timed out."
+          exit 1
