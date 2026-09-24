@@ -6,6 +6,7 @@
 
   vars:
     test_username: testuser-cd
+
   tasks:
     - name: Create test user
       ansible.builtin.user:
@@ -22,9 +23,11 @@
 
     - name: Verify test user
       ansible.builtin.command:
-        cmd: "id {{ test_username }}"
-        register: testuser_info
-        changed_when: false
+        argv:
+          - id
+          - "{{ test_username }}"
+      register: testuser_info
+      changed_when: false
 
     - name: Display test user information
       ansible.builtin.debug:
