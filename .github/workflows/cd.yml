@@ -81,9 +81,14 @@ jobs:
           Write-Host ""
           Write-Host "Testing AWX API..."
 
-          $response = curl.exe -k -s `
+          $response = curl.exe -k -sS `
             --connect-timeout 10 `
             "$awxHost/api/v2/ping/"
+
+          if ($LASTEXITCODE -ne 0) {
+              Write-Host "ERROR: AWX API connectivity test failed."
+              exit 1
+          }
 
           Write-Host "AWX API response:"
           Write-Host $response
@@ -128,7 +133,13 @@ jobs:
                   exit 1
               }
 
+              if (-not (Test-Path $responseFile)) {
+                  Write-Host "ERROR: AWX response file was not created."
+                  exit 1
+              }
+
               $response = Get-Content -Raw -Path $responseFile
+
               Write-Host "AWX synchronization response:"
               Write-Host $response
 
@@ -152,7 +163,8 @@ jobs:
               Write-Host $_.Exception.Message
               exit 1
           }
-```
+
+
       # ============================================================
       # Step 4: Wait for Project Synchronization
       # ============================================================
@@ -162,7 +174,15 @@ jobs:
           Write-Host "Waiting for AWX project synchronization..."
           Write-Host "Project Update ID: $env:PROJECT_UPDATE_ID"
 
-          $url = "${{ secrets.AWX_HOST }}/api/v2/project_updates/$env:PROJECT_UPDATE_ID/"
+          if ([string]::IsNullOrWhiteSpace("$env:PROJECT_UPDATE_ID")) {
+              Write-Host "ERROR: PROJECT_UPDATE_ID is empty."
+              exit 1
+          }
+
+          $awxHost = "${{ secrets.AWX_HOST }}"
+          $token = "${{ secrets.AWX_TOKEN }}"
+
+          $url = "$awxHost/api/v2/project_updates/$env:PROJECT_UPDATE_ID/"
 
           $maxAttempts = 30
           $attempt = 0
@@ -174,9 +194,14 @@ jobs:
               Write-Host ""
               Write-Host "Checking project synchronization status - Attempt $attempt/$maxAttempts"
 
-              $response = curl.exe -k -s `
-                -H "Authorization: Bearer ${{ secrets.AWX_TOKEN }}" `
+              $response = curl.exe -k -sS `
+                -H "Authorization: Bearer $token" `
                 "$url"
+
+              if ($LASTEXITCODE -ne 0) {
+                  Write-Host "ERROR: Failed to query AWX project update."
+                  exit 1
+              }
 
               try {
                   $json = $response | ConvertFrom-Json
@@ -202,6 +227,7 @@ jobs:
               }
               catch {
                   Write-Host "ERROR: Unable to parse AWX project update response."
+                  Write-Host $_.Exception.Message
                   exit 1
               }
 
@@ -220,52 +246,59 @@ jobs:
         run: |
           Write-Host "Launching AWX deployment job..."
 
-          $url = "${{ secrets.AWX_HOST }}/api/v2/job_templates/${{ secrets.AWX_JOB_TEMPLATE_ID }}/launch/"
+          $awxHost = "${{ secrets.AWX_HOST }}"
+          $jobTemplateId = "${{ secrets.AWX_JOB_TEMPLATE_ID }}"
+          $token = "${{ secrets.AWX_TOKEN }}"
 
-          Write-Host "AWX Job Template ID: ${{ secrets.AWX_JOB_TEMPLATE_ID }}"
+          $url = "$awxHost/api/v2/job_templates/$jobTemplateId/launch/"
 
-          $response = curl.exe -k -s `
-            -w "`nHTTP_STATUS:%{http_code}" `
-            -X POST `
-            -H "Authorization: Bearer ${{ secrets.AWX_TOKEN }}" `
-            -H "Content-Type: application/json" `
-            "$url"
+          Write-Host "AWX Job Template ID: $jobTemplateId"
 
-          Write-Host ""
-          Write-Host "AWX launch response:"
-          Write-Host $response
+          $responseFile = Join-Path $env:RUNNER_TEMP "awx-job-launch.json"
 
-          if ($response -match "HTTP_STATUS:2\d\d") {
+          try {
+              curl.exe -k -sS `
+                --fail-with-body `
+                -X POST `
+                -H "Authorization: Bearer $token" `
+                -H "Content-Type: application/json" `
+                -o "$responseFile" `
+                "$url"
 
-              $jsonPart = $response -replace "`nHTTP_STATUS:.*", ""
-
-              try {
-                  $json = $jsonPart | ConvertFrom-Json
-                  $jobId = $json.job
-
-                  if ($null -eq $jobId) {
-                      Write-Host "ERROR: Could not determine AWX Job ID."
-                      exit 1
-                  }
-
-                  Write-Host "AWX Job ID: $jobId"
-
-                  # Save Job ID for next step
-                  "AWX_JOB_ID=$jobId" | Out-File `
-                    -FilePath $env:GITHUB_ENV `
-                    -Append
-
-                  Write-Host "AWX deployment job launched successfully."
-
-              }
-              catch {
-                  Write-Host "ERROR: Could not parse AWX launch response."
+              if ($LASTEXITCODE -ne 0) {
+                  Write-Host "ERROR: Failed to launch AWX Job Template."
                   exit 1
               }
 
+              if (-not (Test-Path $responseFile)) {
+                  Write-Host "ERROR: AWX launch response file was not created."
+                  exit 1
+              }
+
+              $response = Get-Content -Raw -Path $responseFile
+
+              Write-Host "AWX launch response:"
+              Write-Host $response
+
+              $json = $response | ConvertFrom-Json
+              $jobId = $json.job
+
+              if ($null -eq $jobId) {
+                  Write-Host "ERROR: Could not determine AWX Job ID."
+                  exit 1
+              }
+
+              Write-Host "AWX Job ID: $jobId"
+
+              "AWX_JOB_ID=$jobId" | Out-File `
+                -FilePath $env:GITHUB_ENV `
+                -Append
+
+              Write-Host "AWX deployment job launched successfully."
           }
-          else {
-              Write-Host "ERROR: Failed to launch AWX Job Template."
+          catch {
+              Write-Host "ERROR: Could not launch AWX Job Template."
+              Write-Host $_.Exception.Message
               exit 1
           }
 
@@ -279,7 +312,15 @@ jobs:
           Write-Host "Monitoring AWX deployment job..."
           Write-Host "AWX Job ID: $env:AWX_JOB_ID"
 
-          $url = "${{ secrets.AWX_HOST }}/api/v2/jobs/$env:AWX_JOB_ID/"
+          if ([string]::IsNullOrWhiteSpace("$env:AWX_JOB_ID")) {
+              Write-Host "ERROR: AWX_JOB_ID is empty."
+              exit 1
+          }
+
+          $awxHost = "${{ secrets.AWX_HOST }}"
+          $token = "${{ secrets.AWX_TOKEN }}"
+
+          $url = "$awxHost/api/v2/jobs/$env:AWX_JOB_ID/"
 
           $maxAttempts = 60
           $attempt = 0
@@ -291,9 +332,14 @@ jobs:
               Write-Host ""
               Write-Host "Checking AWX job status - Attempt $attempt/$maxAttempts"
 
-              $response = curl.exe -k -s `
-                -H "Authorization: Bearer ${{ secrets.AWX_TOKEN }}" `
+              $response = curl.exe -k -sS `
+                -H "Authorization: Bearer $token" `
                 "$url"
+
+              if ($LASTEXITCODE -ne 0) {
+                  Write-Host "ERROR: Failed to query AWX job."
+                  exit 1
+              }
 
               try {
                   $json = $response | ConvertFrom-Json
@@ -324,6 +370,7 @@ jobs:
               }
               catch {
                   Write-Host "ERROR: Unable to parse AWX job response."
+                  Write-Host $_.Exception.Message
                   exit 1
               }
 
