@@ -1,0 +1,31 @@
+---
+- name: Create test user on Ubuntu servers
+  hosts: all
+  become: true
+  gather_facts: false
+
+  vars:
+    test_username: testuser-cd
+  tasks:
+    - name: Create test user
+        ansible.builtin.user:
+        name: "{{ test_username }}"
+        shell: /bin/bash
+        create_home: true
+        state: present
+
+    - name: Add test user to sudo group
+      ansible.builtin.user:
+        name: "{{ test_username }}"
+        groups: sudo
+        append: true
+
+    - name: Verify test user
+      ansible.builtin.command:
+        cmd: "id {{ test_username }}"
+      register: testuser_info
+      changed_when: false
+
+    - name: Display test user information
+      ansible.builtin.debug:
+        var: testuser_info.stdout
