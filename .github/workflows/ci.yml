@@ -108,4 +108,9 @@ jobs:
       # ============================================================
       - name: Run Ansible Lint
         run: |
-          ansible-lint *.yml *.yaml
+          ansible-lint \
+            configure-syslog-on-ubuntu.yml \
+            create-test-user.yml \
+            deploy-webserver.yml \
+            sync-nutanix-vm-to-awx.yml \
+            sync-nutanix-vm-to-awx-gr-than-500-new.yml
