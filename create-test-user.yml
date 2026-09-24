@@ -8,7 +8,7 @@
     test_username: testuser-cd
   tasks:
     - name: Create test user
-        ansible.builtin.user:
+      ansible.builtin.user:
         name: "{{ test_username }}"
         shell: /bin/bash
         create_home: true
@@ -23,8 +23,8 @@
     - name: Verify test user
       ansible.builtin.command:
         cmd: "id {{ test_username }}"
-      register: testuser_info
-      changed_when: false
+        register: testuser_info
+        changed_when: false
 
     - name: Display test user information
       ansible.builtin.debug:
