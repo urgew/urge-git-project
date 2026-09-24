@@ -113,4 +113,5 @@ jobs:
             create-test-user.yml \
             deploy-webserver.yml \
             sync-nutanix-vm-to-awx.yml \
-            sync-nutanix-vm-to-awx-gr-than-500-new.yml
+            sync-nutanix-vm-to-awx-gr-than-500-new.yml \
+            --format pep8
