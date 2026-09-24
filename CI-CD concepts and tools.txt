@@ -378,33 +378,15 @@ Webhook Key : UsmiK0zxPcG6UacC3XgoXxmovLfLCCTRqFq8GyUdOPWkHDeZY8
 SSL verification: If your AWX server uses a trusted SSL certificate, leave it enabled. 
 If you are using a self-signed cert in a private lab, click Disable.)
 
-Step 2: Update GitHub
-----------------------------
-Go back to your GitHub repository Settings -> Webhooks.
-Click Edit on your webhook.
-Paste the new Smee URL into the Payload URL field.
-Keep the Content type as application/json.
-Click Update webhook.
 
+To run CD run below commands if new things exist in our enviroment
+---------------------------------------------------------------------
+git add .
+git commit -m "Merge remote changes"
+git push origin main
 
+and check by runnning command ./run.cmd  on our github runner(my laptop or my rdp server)
 
-to check if the pod is connected to smee:
- kubectl logs -n awx -l app=awx-smee-client
-Output
-==============
-Connected https://smee.io
-Event { type: 'error', message: undefined }
-Connected https://smee.io
-Event { type: 'error', message: undefined }
-Connected https://smee.io
-
-
-Step 3: Trigger and monitor the test
-=====================================
-Push a small commit or dummy change to your Git repository.
-Head back to your Kubernetes terminal and monitor the smee-client logs again:bash
-   kubectl logs -f -n awx -l app=awx-smee-client
-Use code with caution.You should see log entries showing that a POST request was received from Smee and successfully forwarded to your AWX target URL.Log into your AWX Web UI, click on Jobs in the left menu, and verify that a new Job has automatically spawned from your template.
 
 
  Sample project : Web Server Setup on server 10.1.177.205
