@@ -10,18 +10,18 @@
 
 1.1 Open your repository : Go to your project folder on your computer.(https://github.com/urgew/urge-ansible1/projects)
 
-1.2 Create the workflow folders: Create a folder named .github and a subfolder named workflows
+   2 Create the workflow folders: Create a folder named .github and a subfolder named workflows
 
 
 Step 1 on my laptop
 ----------------
-1. install git  Download it from the official Git website.---> https://git-scm.com/install/windows
+2.1. install git  Download it from the official Git website.---> https://git-scm.com/install/windows
 
-2. Run the installer and click Next through the default settings.
+2.2. Run the installer and click Next through the default settings.
 
 start with : file:///C:/Users/urgew/AppData/Local/Programs/Git/ReleaseNotes.html
 
-3. create one folder and named it by .github 
+3.3. create one folder and named it by .github 
    then create another folder inside /github and save as workflows 
    then inside folder workflows create a file called ci.yml
 
@@ -114,12 +114,54 @@ token generated is : MtYylQagomH6PanSWqRKPTVbM2Bx6u
 
 3. Go to Settings -> Secrets and variables -> Actions -> New repository secret.
 
-create secret on github called- my_awx_secret
------------------------------------------------
-4. AWX_HOST : https://awx-test.cbo.com     -------->my awx server
-   AWX_TOKEN : MtYylQagomH6PanSWqRKPTVbM2Bx6u  ------>token generated above on awx
-   AWX_PROJECT_ID : 18                         -------> my git project id  on awx projects
+4. create secret on github 
+   -----------------------------------------------
+go to github-->Setting-->Secret and variables-->Action-->click new repository secret-->enter the name (AWX_HOST) and https://awx-test.cbo.com  in the secret * --> then click Add secret
+
+do the above for all ( AWX_TOKEN,AWX_PROJECT_ID,  AWX_TEMPLATE_ID) one by one separately
+
+   AWX_HOST : https://awx-test.cbo.com            -------->my awx server
+   AWX_TOKEN : MtYylQagomH6PanSWqRKPTVbM2Bx6u     ------>token generated above on awx
+   AWX_PROJECT_ID : 18                            -------> my git project id  on awx projects
    AWX_TEMPLATE_ID : 20                           -------> i Created one template for this on awx as a sample
+
+  do one by one
+
+
+
+Installing Github runner on my laptop(for the time i installed on my RDP: 10.1.175.184)
+---------------------------------------------------------------------------------------
+1. open power shell and run command :   Resolve-DnsName awx-test.cbo.com
+
+2. then run : Test-NetConnection awx-test.cbo.com -Port 443
+
+*****If those work, your laptop has the required connectivity.
+
+3. Register the laptop as a GitHub runner
+In your repository:
+
+GitHub → urgew/urge-git-project → Settings → Actions → Runners
+
+Then:
+
+New self-hosted runner → Windows → x64
+
+Download
+===========
+ on power shell : mkdir actions-runner; cd actions-runner
+ download:  Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v2.337.0/actions-runner-win-x64-2.337.0.zip -OutFile actions-runner-win-x64-2.337.0.zip
+ Validate the hash:  if((Get-FileHash -Path actions-runner-win-x64-2.337.0.zip -Algorithm SHA256).Hash.ToUpper() -ne '1150692afa94e71f872017e254ea55b6eece1eece3fe7e3a6d4c93d0a1b85cfc'.ToUpper()){ throw 'Computed checksum did not match' }
+ extract:   Add-Type -AssemblyName System.IO.Compression.FileSystem ; [System.IO.Compression.ZipFile]::ExtractToDirectory("$PWD/actions-runner-win-x64-2.337.0.zip", "$PWD")
+
+Configure
+============
+# Create the runner and start the configuration experience
+ ./config.cmd --url https://github.com/urgew/urge-git-project --token AILBHMU6COECP73FDJAIEWLKWPY5O
+
+then go step by step as it displays
+
+ #Run it!
+./run.cmd    ---------->when this command is running on the power shell  and simultenously run the cd.yml (git push) from my local runner(on my laptop) the ./run command display the process
 
 
 5. Create the cd.yml file
@@ -130,35 +172,157 @@ name: Continuous Deployment via AWX
 
 on:
   push:
-    branches: [ "main" ] # Triggers only when code lands on main
+    branches:
+      - main
 
 jobs:
   deploy-via-awx:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
-    # Step 1: Tell AWX to pull the latest playbook code from this GitHub repository
-    - name: Sync AWX Project Source Code
-      run: |
-        curl -X POST \
-          -H "Authorization: Bearer ${{ secrets.AWX_TOKEN }}" \
-          -H "Content-Type: application/json" \
-          -k \
-          "${{ secrets.AWX_HOST }}/api/v2/projects/${{ secrets.AWX_PROJECT_ID }}/update/"
 
-    # Step 2: Wait 10 seconds to ensure the project sync completes smoothly
-    - name: Wait for Sync
-      run: sleep 10
+      # ============================================================
+      # Step 1: Check GitHub Secrets
+      # ============================================================
+      - name: Check AWX configuration
+        shell: powershell
+        run: |
+          Write-Host "Checking AWX configuration..."
 
-    # Step 3: Trigger the actual Deployment Job Template in AWX
-    - name: Launch AWX Deployment Template
-      run: |
-        curl -X POST \
-          -H "Authorization: Bearer ${{ secrets.AWX_TOKEN }}" \
-          -H "Content-Type: application/json" \
-          -d '{"extra_vars": {"git_commit_sha": "${{ github.sha }}"}}' \
-          -k \
-          "${{ secrets.AWX_HOST }}/api/v2/job_templates/${{ secrets.AWX_TEMPLATE_ID }}/launch/"
+          if ([string]::IsNullOrWhiteSpace("${{ secrets.AWX_HOST }}")) {
+              Write-Host "ERROR: AWX_HOST is empty or not configured."
+              exit 1
+          }
+
+          if ([string]::IsNullOrWhiteSpace("${{ secrets.AWX_TOKEN }}")) {
+              Write-Host "ERROR: AWX_TOKEN is empty or not configured."
+              exit 1
+          }
+
+          if ([string]::IsNullOrWhiteSpace("${{ secrets.AWX_PROJECT_ID }}")) {
+              Write-Host "ERROR: AWX_PROJECT_ID is empty or not configured."
+              exit 1
+          }
+
+          if ([string]::IsNullOrWhiteSpace("${{ secrets.AWX_JOB_TEMPLATE_ID }}")) {
+              Write-Host "ERROR: AWX_JOB_TEMPLATE_ID is empty or not configured."
+              exit 1
+          }
+
+          Write-Host "AWX_HOST is configured."
+          Write-Host "AWX_PROJECT_ID is configured."
+          Write-Host "AWX_JOB_TEMPLATE_ID is configured."
+          Write-Host "AWX_TOKEN is configured."
+
+      # ============================================================
+      # Step 2: Test AWX Connectivity
+      # ============================================================
+      - name: Test AWX connectivity
+        shell: powershell
+        run: |
+          Write-Host "Testing DNS resolution for AWX..."
+
+          Resolve-DnsName awx-test.cbo.com
+
+          Write-Host ""
+          Write-Host "Testing HTTPS connectivity to AWX..."
+
+          $connection = Test-NetConnection awx-test.cbo.com -Port 443
+
+          if (-not $connection.TcpTestSucceeded) {
+              Write-Host "ERROR: Cannot connect to AWX on TCP port 443."
+              exit 1
+          }
+
+          Write-Host "AWX HTTPS connectivity successful."
+
+          Write-Host ""
+          Write-Host "Testing AWX API..."
+
+          $response = curl.exe -k -s `
+            --connect-timeout 10 `
+            "${{ secrets.AWX_HOST }}/api/v2/ping/"
+
+          Write-Host "AWX API response:"
+          Write-Host $response
+
+          if ([string]::IsNullOrWhiteSpace($response)) {
+              Write-Host "ERROR: No response received from AWX API."
+              exit 1
+          }
+
+          Write-Host "AWX API connectivity successful."
+
+      # ============================================================
+      # Step 3: Sync AWX Project
+      # ============================================================
+      - name: Sync AWX Project Source Code
+        shell: powershell
+        run: |
+          Write-Host "Starting AWX project synchronization..."
+
+          $url = "${{ secrets.AWX_HOST }}/api/v2/projects/${{ secrets.AWX_PROJECT_ID }}/update/"
+
+          Write-Host "AWX Project ID: ${{ secrets.AWX_PROJECT_ID }}"
+
+          $response = curl.exe -k -s -w "`nHTTP_STATUS:%{http_code}" `
+            -X POST `
+            -H "Authorization: Bearer ${{ secrets.AWX_TOKEN }}" `
+            -H "Content-Type: application/json" `
+            "$url"
+
+          Write-Host "AWX synchronization response:"
+          Write-Host $response
+
+          if ($response -match "HTTP_STATUS:2\d\d") {
+              Write-Host "AWX project synchronization requested successfully."
+          }
+          else {
+              Write-Host "ERROR: AWX project synchronization failed."
+              exit 1
+          }
+
+      # ============================================================
+      # Step 4: Wait for AWX Project Synchronization
+      # ============================================================
+      - name: Wait for AWX project synchronization
+        shell: powershell
+        run: |
+          Write-Host "Waiting for AWX project synchronization..."
+          Write-Host "Waiting 15 seconds..."
+
+          Start-Sleep -Seconds 15
+
+          Write-Host "AWX project synchronization wait completed."
+
+      # ============================================================
+      # Step 5: Launch AWX Job Template
+      # ============================================================
+      - name: Launch AWX Deployment Job Template
+        shell: powershell
+        run: |
+          Write-Host "Launching AWX deployment job template..."
+
+          $url = "${{ secrets.AWX_HOST }}/api/v2/job_templates/${{ secrets.AWX_JOB_TEMPLATE_ID }}/launch/"
+
+          Write-Host "AWX Job Template ID: ${{ secrets.AWX_JOB_TEMPLATE_ID }}"
+
+          $response = curl.exe -k -s -w "`nHTTP_STATUS:%{http_code}" `
+            -X POST `
+            -H "Authorization: Bearer ${{ secrets.AWX_TOKEN }}" `
+            -H "Content-Type: application/json" `
+            "$url"
+
+          Write-Host "AWX launch response:"
+          Write-Host $response
+
+          if ($response -match "HTTP_STATUS:2\d\d") {
+              Write-Host "AWX deployment job launched successfully."
+          }
+          else {
+              Write-Host "ERROR: Failed to launch AWX Job Template."
+              exit 1
+          }
 
 
 
@@ -197,6 +361,50 @@ Phase 5: Execution (AWX ➡️ Your Target Servers)
  11. Running the Playbook: AWX takes the newly downloaded playbooks from Phase 3 and begins running the specified Job Template.
  12. Infrastructure Changes: The Ansible tasks execute on your target nodes (e.g., configuring Nginx, updating app versions, setting up firewalls)
  13. Final Status: AWX logs the entire playbook execution inside its own dashboard UI so you can see if the configuration succeeded or encountered errors.
+
+
+WHen we want to run cd.yml or push the job from github repo to awx server
+----------------------------------------------------------------------------
+click on the template name we prepared above for git ---> Click Edit-->check box of Enable Webhook -->in the details of Webhook-->select Webhook Service is Github 
+-->and copy the Webhook URL and Webhook Key that AWX generates. --->Save
+
+Webhook URL : https://awx-test.cbo.com/api/v2/job_templates/20/github/
+Webhook Key : UsmiK0zxPcG6UacC3XgoXxmovLfLCCTRqFq8GyUdOPWkHDeZY8
+
+-->Go to your GitHub repository browser page -> Settings -> Webhooks -> Add Webhook.
+-->Paste the URL and Key from AWX, set content type to application/json, and save it(click Add webhook)
+
+(Payload URL: Paste the exact Webhook URL you copied from AWX.Content type: Select application/json from the dropdown menu (Critical! AWX will reject other formats).Secret: Paste the exact Webhook Key generated by AWX.
+SSL verification: If your AWX server uses a trusted SSL certificate, leave it enabled. 
+If you are using a self-signed cert in a private lab, click Disable.)
+
+Step 2: Update GitHub
+----------------------------
+Go back to your GitHub repository Settings -> Webhooks.
+Click Edit on your webhook.
+Paste the new Smee URL into the Payload URL field.
+Keep the Content type as application/json.
+Click Update webhook.
+
+
+
+to check if the pod is connected to smee:
+ kubectl logs -n awx -l app=awx-smee-client
+Output
+==============
+Connected https://smee.io
+Event { type: 'error', message: undefined }
+Connected https://smee.io
+Event { type: 'error', message: undefined }
+Connected https://smee.io
+
+
+Step 3: Trigger and monitor the test
+=====================================
+Push a small commit or dummy change to your Git repository.
+Head back to your Kubernetes terminal and monitor the smee-client logs again:bash
+   kubectl logs -f -n awx -l app=awx-smee-client
+Use code with caution.You should see log entries showing that a POST request was received from Smee and successfully forwarded to your AWX target URL.Log into your AWX Web UI, click on Jobs in the left menu, and verify that a new Job has automatically spawned from your template.
 
 
  Sample project : Web Server Setup on server 10.1.177.205
