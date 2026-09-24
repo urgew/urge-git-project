@@ -109,4 +109,3 @@ jobs:
       - name: Run Ansible Lint
         run: |
           ansible-lint .
-```
