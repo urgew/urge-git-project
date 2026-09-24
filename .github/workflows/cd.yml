@@ -112,35 +112,47 @@ jobs:
 
           Write-Host "AWX Project ID: $projectId"
 
+          $responseFile = Join-Path $env:RUNNER_TEMP "awx-project-update.json"
+
           try {
-              $headers = @{
-                  "Authorization" = "Bearer $token"
-                  "Content-Type"  = "application/json"
+              curl.exe -k -sS `
+                --fail-with-body `
+                -X POST `
+                -H "Authorization: Bearer $token" `
+                -H "Content-Type: application/json" `
+                -o "$responseFile" `
+                "$url"
+
+              if ($LASTEXITCODE -ne 0) {
+                  Write-Host "ERROR: AWX project synchronization request failed."
+                  exit 1
               }
 
-              $response = Invoke-RestMethod `
-                  -Uri $url `
-                  -Method Post `
-                  -Headers $headers
+              $response = Get-Content -Raw -Path $responseFile
+              Write-Host "AWX synchronization response:"
+              Write-Host $response
 
-              Write-Host "AWX project synchronization requested successfully."
-              Write-Host "Project Update ID: $($response.id)"
-              Write-Host "Project Status: $($response.status)"
+              $json = $response | ConvertFrom-Json
 
-              if ($null -eq $response.id) {
+              if ($null -eq $json.id) {
                   Write-Host "ERROR: AWX did not return a Project Update ID."
                   exit 1
               }
 
-              "PROJECT_UPDATE_ID=$($response.id)" | Out-File `
-                  -FilePath $env:GITHUB_ENV `
-                  -Append
+              Write-Host "AWX project synchronization requested successfully."
+              Write-Host "Project Update ID: $($json.id)"
+              Write-Host "Project Status: $($json.status)"
+
+              "PROJECT_UPDATE_ID=$($json.id)" | Out-File `
+                -FilePath $env:GITHUB_ENV `
+                -Append
           }
           catch {
               Write-Host "ERROR: AWX project synchronization failed."
               Write-Host $_.Exception.Message
               exit 1
           }
+```
       # ============================================================
       # Step 4: Wait for Project Synchronization
       # ============================================================
