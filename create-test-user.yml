@@ -6,14 +6,13 @@
 
   vars:
     test_username: testuser-cd
-    test_password: "ChangeMe@123"
+    
 
   tasks:
 
     - name: Create test user
       ansible.builtin.user:
         name: "{{ test_username }}"
-        password: "{{ test_password | password_hash('sha512') }}"
         shell: /bin/bash
         create_home: true
         state: present
